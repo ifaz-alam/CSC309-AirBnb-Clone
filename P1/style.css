@@ -1,3 +1,4 @@
+/* index page */
 html,body {
     margin:0;
     padding:0;
@@ -28,3 +29,54 @@ html,body {
     bottom: auto;
 }
 
+
+.reservation{
+    width: 250px;
+    height: 250px;
+    transform: scale(0.95);
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.user-profile-pic {
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+/* iPhone Pro */ 
+@media (min-width: 390px) { 
+    .user-profile-pic {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+    .user-profile-pic {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+
+ }
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+
+ }
+
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+
+ }
+
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+
+ }
