@@ -1,0 +1,20 @@
+.my-background {
+    background-image: url(./public/images/backgroundblurred.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+.primary-bold-color {
+    font-weight: bold;
+    color: #F66867;
+}
+
+.button-color {
+    background-color: #3D93DD;
+}
+
+.button-color:hover {
+    background-color: #5BC5EA;
+}
