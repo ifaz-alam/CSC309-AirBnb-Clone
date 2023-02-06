@@ -1,0 +1,12 @@
+.primary-bold-color {
+    font-weight: bold;
+    color: #F66867;
+}
+
+.button-color {
+    background-color: #3D93DD;
+}
+
+.button-color:hover {
+    background-color: #5BC5EA;
+}
