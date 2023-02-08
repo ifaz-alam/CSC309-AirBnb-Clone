@@ -10,3 +10,7 @@
 .button-color:hover {
     background-color: #5BC5EA;
 }
+
+ul {
+    list-style-type: none;
+}
