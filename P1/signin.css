@@ -1,9 +1,9 @@
 .my-background {
     background-image: url(./public/images/backgroundblurred.png);
-    background-repeat: no-repeat;
+    background-repeat: repeat;
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .primary-bold-color {
