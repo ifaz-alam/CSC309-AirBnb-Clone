@@ -1,7 +1,23 @@
 from django.db import models
-from accounts.models import Account
-# Create your models here.
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 class Comment(models.Model):
-    Author = models.ForeignKey(Account, on_delete=models.SET_NULL, related_name='comments', null=True)
+    """A comment within the system
+
+    # Has implicit fields from Foreign Keys:
+    comments: A list of comments (replying this this comment)
+    """
+    Author = models.ForeignKey('accounts.Account', on_delete=models.SET_NULL, related_name='comments', null=True)
+    comment = models.CharField(max_length=500)
+    
+    # Content Type is the parent -> What the comment is placed on (User, Property, Comment)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
     # TODO More
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
