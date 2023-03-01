@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import RegisterAccount
+from .views import AccountViews, LoginView
 
 
 app_name = 'accounts'
 urlpatterns = [
-    path('register/', RegisterAccount.as_view(), name='register')
+    path('user/', AccountViews.as_view(), name='user'), #POST: Create, #PUT: Update
+    path('login/', LoginView.as_view(), name='login'),
 ]
