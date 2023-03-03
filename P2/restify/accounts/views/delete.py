@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from ..models import Account, AccountSerializer
 from rest_framework.permissions import AllowAny
-from ..helpers import missing
+from helpers import missing
 
 def deleteAccount(request):
     """Delete the currently authenticated account

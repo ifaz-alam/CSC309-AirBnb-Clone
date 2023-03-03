@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from ..models import Account, AccountSerializer
-from ..helpers import missing, nonEmpty
+from helpers import missing, nonEmpty
 
 def updateAccount(request):
     """Update the currently authenticted account

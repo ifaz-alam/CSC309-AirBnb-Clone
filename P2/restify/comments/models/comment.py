@@ -10,6 +10,7 @@ class Comment(models.Model):
     """
     Author = models.ForeignKey('accounts.Account', on_delete=models.SET_NULL, related_name='comments', null=True)
     comment = models.CharField(max_length=500)
+    rating = models.IntegerField(default=0) # If the parent is User or Property, this field is used
     
     # Content Type is the parent -> What the comment is placed on (User, Property, Comment)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
