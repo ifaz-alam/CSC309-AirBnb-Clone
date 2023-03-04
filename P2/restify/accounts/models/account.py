@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from comments.models import Comment
-from rest_framework import serializers
 
 
 class Image(models.Model):
@@ -30,16 +29,3 @@ class Account(AbstractUser):
     
     comments = GenericRelation(Comment, related_query_name='account')
     
-class AccountSerializer(serializers.Serializer):
-    """Serializer for an Account
-    
-    #TODO
-    Serialize the comments
-    
-    """
-    username = serializers.CharField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    phone_number = serializers.CharField(max_length=12)
-    biography = serializers.CharField(max_length=500)
-    guest_rating = serializers.IntegerField()

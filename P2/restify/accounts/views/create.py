@@ -1,5 +1,6 @@
 from rest_framework.response import Response
-from ..models import Account, AccountSerializer
+from ..models import Account
+from accounts.serializers import AccountSerializerNoComments
 from helpers import missing
 
 def createAccount(request):
@@ -39,4 +40,4 @@ def createAccount(request):
 
     user.save()
 
-    return Response(AccountSerializer(user).data, status=200)
+    return Response(AccountSerializerNoComments(user).data, status=200)

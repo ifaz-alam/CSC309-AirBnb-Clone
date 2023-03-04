@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from ..models import Comment
 from properties.models import Property
 from accounts.models import Account
+from ..serializers import CommentSerializer
 
 def createComment(request):
     """Create a comment within the system.
@@ -55,5 +56,4 @@ def createComment(request):
     new_comment = Comment(author=request.user, comment=data['comment'], rating = data['rating'], content_object=comment_parent)
     
     new_comment.save()
-    
-    return Response(status=200)
+    return Response(CommentSerializer(new_comment).data, status=200)

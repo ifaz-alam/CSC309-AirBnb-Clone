@@ -1,5 +1,6 @@
 from rest_framework.response import Response
-from ..models import Account, AccountSerializer
+from accounts.models import Account
+from accounts.serializers import AccountSerializer
 from helpers import missing, nonEmpty
 
 def updateAccount(request):
