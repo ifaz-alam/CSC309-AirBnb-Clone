@@ -16,9 +16,27 @@ class CommentObjectRelatedField(serializers.RelatedField):
         elif (isinstance(value, Property)):
             pass
         elif (isinstance(value, Comment)):
-            return CommentSerializer(value).data
+            return CommentSerializerNoParent(value).data
         
         # return serializer.data
+
+class CommentSerializerNoParent(serializers.ModelSerializer):
+    """Serializer for a comment object, does not show the parent
+
+    """
+    author_username = serializers.CharField(source='author.username')
+    replies = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Comment
+        fields = ['pk', 'author', 'author_username', 'comment', 'replies']
+
+    def get_replies(self, obj):
+        if obj.comments.all():
+            print(obj.comments.all())
+            return CommentSerializerNoParent(obj.comments.all(), many=True).data
+        else:
+            return None
 
 class CommentSerializer(serializers.ModelSerializer):
     """Serializer for a comment object
@@ -26,8 +44,9 @@ class CommentSerializer(serializers.ModelSerializer):
     """
     parent = CommentObjectRelatedField(source='content_object', queryset = 'content_object')
     author_username = serializers.CharField(source='author.username')
+    replies = CommentSerializerNoParent(many=True, source='comments')
     
     class Meta:
         model = Comment
-        fields = ['pk', 'author', 'author_username', 'comment', 'rating', 'parent', ]
+        fields = ['pk', 'author', 'author_username', 'comment', 'rating', 'parent', 'replies']
 

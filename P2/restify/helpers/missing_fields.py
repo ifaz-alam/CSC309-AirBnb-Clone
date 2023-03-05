@@ -8,8 +8,7 @@ def missing(data: dict[str: list[str]], required_fields: set) -> dict[str: list[
         missing = {'missing_required_fields': []}
         for field in required_fields:
             if field not in data:
-                missing['missing_required_fields'] = missing['missing_required_fields'].append(
-                    field)
+                missing['missing_required_fields'].append(field)
 
         return missing
     

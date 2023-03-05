@@ -9,6 +9,6 @@ def nonEmpty(data: dict[str: list[str]], non_empty_fields: set) -> dict[str: lis
     empty = {'empty_fields': []}
     for field in non_empty_fields:
             if data[field] == None or data[field] == '':
-                empty['empty_fields'] = empty['empty_fields'].append(field)
+                empty['empty_fields'].append(field)
 
     return empty
