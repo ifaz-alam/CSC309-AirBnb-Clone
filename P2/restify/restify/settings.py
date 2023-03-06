@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'notifications',
     'properties',
     'accounts',
-    'rest_framework'
+    'rest_framework',
+    'images'
 ]
 
 MIDDLEWARE = [
@@ -139,4 +140,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-}   
+}
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'media/'

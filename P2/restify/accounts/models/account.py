@@ -2,10 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from comments.models import Comment
-
-
-class Image(models.Model):
-    pass
+from images.models import Image
 
 class Account(AbstractUser):
     """An account within the system

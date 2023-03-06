@@ -2,18 +2,20 @@ from rest_framework.response import Response
 from accounts.models import Account
 from accounts.serializers import AccountSerializer
 from helpers import missing, nonEmpty
+from images.models import Image
 
 def updateAccount(request):
     """Update the currently authenticted account
 
     ### Required fields:
     "username", "first_name", "last_name", "password_1", "password_2", "phone_number", "email", "biography",
-    "guest_rating"
+    "guest_rating", "profile_pic"
 
 
-    All fields except password_1 and password_2 will be auto-filled out with current data.
+    All fields except password_1, password_2, and profile_pic will be auto-filled out with current data.
 
     *If password_1 is empty, do not update the user's password.
+    *If profile_pic is empty, do not update the user's profile picture
 
 
     ### Example post data.
@@ -26,6 +28,7 @@ def updateAccount(request):
     "phone_number": "555-555-5555",
     "biography": "bio",
     "guest_rating" : "0",
+    "profile_picture" : "",
     "password_1": "",
     "password_2": ""
     }
@@ -35,7 +38,7 @@ def updateAccount(request):
         return Response({"not_authenticated" : "You must be logged in"}, status=403)
     
     required_fields = {"username", "first_name",
-                        "last_name", "phone_number", "email", "password_1", "password_2", "biography", "guest_rating", "email"}
+                        "last_name", "phone_number", "email", "password_1", "password_2", "biography", "guest_rating", "email", "profile_picture"}
     non_empty_fields = {"username", "first_name",
                         "last_name", "phone_number", "email"}
 
@@ -44,8 +47,6 @@ def updateAccount(request):
     # Check if required fields are missing or empty
     missing_fields = missing(data, required_fields)
     empty = nonEmpty(data, non_empty_fields)
-    print(empty)
-    print(missing_fields)
     if len(missing_fields['missing_required_fields']) != 0 and len(empty['empty_fields']) != 0:
         return Response(missing_fields | empty, status=400)
 
@@ -79,7 +80,15 @@ def updateAccount(request):
             return Response(errors, status=400)
         else:
             Account.set_password(data['password_1'])
+    
+    if data['profile_picture'] != '':
+        try:
+            image = Image.objects.get(pk=int(data['profile_picture']))
+            currentUser.profile_picture = image
+        except:
+            return Response({'error': 'Image does not eixst'})
 
+    currentUser.save()
     return Response(AccountSerializer(currentUser).data, status=200)
 
 
