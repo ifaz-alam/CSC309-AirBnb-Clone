@@ -4,6 +4,8 @@ from django.db import models
 from comments.models import Comment
 from rest_framework import serializers
 
+# from notifications.models import Notification
+
 
 class Image(models.Model):
     pass
@@ -27,8 +29,9 @@ class Account(AbstractUser):
     biography = models.CharField(blank=True, null=True, max_length=500)
     guest_rating = models.IntegerField(blank=False, null=False, default=0)
     profile_picture = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, blank=True)
-    
     comments = GenericRelation(Comment, related_query_name='account')
+
+    # notifications = models.ManyToManyField(Notification, blank=True)
     
 class AccountSerializer(serializers.Serializer):
     """Serializer for an Account
