@@ -1,1 +1,1 @@
-from .account import Account, AccountSerializer
+from .account import Account

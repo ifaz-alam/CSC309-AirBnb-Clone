@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from ..helpers import missing, nonEmpty
+from helpers import missing
 from django.contrib.auth import authenticate
 
 class LoginView(APIView):
