@@ -3,6 +3,11 @@ from rest_framework.response import Response
 from ..models import Comment
 from ..serializers import CommentSerializer
 
+# class StandardResultsSetPagination(PageNumberPagination):
+#     page_size = 100
+#     page_size_query_param = 'page_size'
+#     max_page_size = 1000
+
 
 def getComment(request):
     """Get a comment within the system
