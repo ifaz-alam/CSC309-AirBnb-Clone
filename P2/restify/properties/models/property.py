@@ -1,8 +1,7 @@
 from django.db import models
 from accounts.models import Account
 from django.contrib.contenttypes.fields import GenericRelation
-from comments.models import Comment
-from user import models.user
+from comments.models import Comment 
 from reservation import Reservation
 
 
@@ -17,7 +16,7 @@ class Property(models.Model):
     max_guests = models.IntegerField()
     bathrooms = models.IntegerField()
     #current_status = models. TODO
-    current_renter = models.user()
+    current_renter = models.ForeignKey(Account)
     reservations = models.ForeignKey(Reservation)
     banned = models.user()
     comments = GenericRelation(Comment, related_query_name='property')
