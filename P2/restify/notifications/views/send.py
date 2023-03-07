@@ -5,33 +5,53 @@ from django.shortcuts import get_object_or_404
 from accounts.models import Account
 from notifications.models import Notification
 
-class sendNotification(APIView):
-    """Add a new notification to an account within the system
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
-    ### Required fields:
-    "type", "link"
-    
-    ### Example post data:
-    {
-    "type": "new_reservation",
-    "link": "http://restify.com/reservations/123"
-    }
+from accounts.models import Account
+from notifications.models import Notification
+
+def sendNotification(request):
     """
-    permission_classes = [IsAuthenticated]
+    Send a notification to a user with the specified username.
 
-    def post(self, request, account_id):
-        account = get_object_or_404(Account, id=account_id)
-        
-        # Create the notification object and set its attributes
-        notification = Notification()
-        notification.type = request.data.get('type', '')
-        notification.link = request.data.get('link', '')
-        notification.seen = False
-        notification.save()
+    Required Fields: username
 
-        # Add the notification to the account's notifications list
-        account.notifications.add(notification)
+    Payload format (JSON):
+    {   
+        "username": "Ifaz",
+        "notification_type": "new_reservation",
+        "link": "https://www.google.com",
+    }
 
-        # # Serialize the notification and return it in the response
-        # serializer = NotificationSerializer(notification)
-        # return Response(serializer.data, status=201)
+    Notification_type must be one of the following values:
+    - "new_reservation"
+    - "cancellation_request"
+    - "approved_reservation"
+    - "cancellation_approved"
+    By default it is "test_notification"
+
+    The "link" field is optional and defaults to "https://www.google.com" if not provided.
+    """
+    if request.method == 'POST':
+        username = request.data.get('username')
+        if not username:
+            return Response({'error': 'username field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        #  filter out the accounts
+        account = Account.objects.filter(username=username).first()
+        if not account:
+            return Response({'error': 'Account not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        payload = request.data
+        link = payload.get('link', 'https://www.google.com')
+        notification_type = payload.get('notification_type', None)
+
+        if notification_type is not None and notification_type not in [choice[0] for choice in Notification.NOTIFICATION_TYPE_CHOICES]:
+            return Response({'error': 'Invalid notification_type value.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        notification = Notification.objects.create(account=account, link=link, notification_type=notification_type)
+        return Response({'success': 'Notification sent.'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'Only POST method is allowed.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

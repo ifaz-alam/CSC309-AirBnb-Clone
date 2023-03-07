@@ -3,5 +3,6 @@ from .views import sendNotification
 
 app_name = 'notifications'
 urlpatterns = [
-    path('send/', sendNotification.as_view(), name='send')
+    # Want to specify the recipient of the notification
+    path('send/', sendNotification, name='send'),
 ]
