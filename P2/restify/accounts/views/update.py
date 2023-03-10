@@ -58,13 +58,19 @@ def updateAccount(request):
 
     # Update non-password fields
     currentUser = request.user
-    currentUser.username = data['username']
     currentUser.first_name = data['first_name']
     currentUser.last_name = data['last_name']
     currentUser.email = data['email']
     currentUser.biography = data['biography']
     currentUser.guest_rating = data['guest_rating']
 
+    # Check if username or email is already in use
+    if (request.user.username != data['username']):
+        if Account.objects.filter(username=request.data['username']).exists() or Account.objects.filter(username=request.data['email']).exists():
+            return Response({"error": 'Username or email already in use'}, status=400)
+        else:
+            currentUser.username = data['username']
+            
     # Update password field if non-empty
     if data['password_1'] != '':
         errors = {}

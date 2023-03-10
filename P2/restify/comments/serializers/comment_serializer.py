@@ -33,7 +33,6 @@ class CommentSerializerNoParent(serializers.ModelSerializer):
 
     def get_replies(self, obj):
         if obj.comments.all():
-            print(obj.comments.all())
             return CommentSerializerNoParent(obj.comments.all(), many=True).data
         else:
             return None

@@ -3,5 +3,5 @@ from .views import CommentViews
 
 app_name = 'comments'
 urlpatterns = [
-    path('', CommentViews.as_view(), name='login'),
+    path('', CommentViews.as_view({'post': 'post', 'delete': 'delete', 'put': 'put'}), name='comments'),
 ]
