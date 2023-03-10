@@ -11,14 +11,19 @@ from rest_framework import status
 
 from accounts.models import Account
 from notifications.models import Notification
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 
+
+@csrf_exempt
+@api_view(['POST'])
 def sendNotification(request):
     """
     Send a notification to a user with the specified username.
 
     Required Fields: username
 
-    Payload format (JSON):
+    Payload format (JSON) POST:
     {   
         "username": "Ifaz",
         "notification_type": "new_reservation",
@@ -34,24 +39,21 @@ def sendNotification(request):
 
     The "link" field is optional and defaults to "https://www.google.com" if not provided.
     """
-    if request.method == 'POST':
-        username = request.data.get('username')
-        if not username:
-            return Response({'error': 'username field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    username = request.data.get('username')
+    if not username:
+        return Response({'error': 'username field is required.'}, status=400)
 
-        #  filter out the accounts
-        account = Account.objects.filter(username=username).first()
-        if not account:
-            return Response({'error': 'Account not found.'}, status=status.HTTP_404_NOT_FOUND)
+    #  filter out the accounts
+    account = Account.objects.filter(username=username).first()
+    if not account:
+        return Response({'error': 'Account not found.'}, status=404)
 
-        payload = request.data
-        link = payload.get('link', 'https://www.google.com')
-        notification_type = payload.get('notification_type', None)
+    payload = request.data
+    link = payload.get('link', 'https://www.google.com')
+    notification_type = payload.get('notification_type', None)
 
-        if notification_type is not None and notification_type not in [choice[0] for choice in Notification.NOTIFICATION_TYPE_CHOICES]:
-            return Response({'error': 'Invalid notification_type value.'}, status=status.HTTP_400_BAD_REQUEST)
+    if notification_type is not None and notification_type not in [choice[0] for choice in Notification.NOTIFICATION_TYPE_CHOICES]:
+        return Response({'error': 'Invalid notification_type value.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        notification = Notification.objects.create(account=account, link=link, notification_type=notification_type)
-        return Response({'success': 'Notification sent.'}, status=status.HTTP_200_OK)
-    else:
-        return Response({'error': 'Only POST method is allowed.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    notification = Notification.objects.create(account=account, link=link, notification_type=notification_type)
+    return Response({'success': 'Notification sent.'}, status=status.HTTP_200_OK)

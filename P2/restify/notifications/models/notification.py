@@ -38,4 +38,4 @@ class Notification(models.Model):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ['seen', 'link', 'type']
+        fields = ['seen', 'link', 'notification_type']
