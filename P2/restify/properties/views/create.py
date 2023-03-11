@@ -7,4 +7,4 @@ def createProperty(response):
     Required fields:
 
     """
-    required_fields = []
+    required_fields = {}
