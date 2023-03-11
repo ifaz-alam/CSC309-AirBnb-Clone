@@ -1,7 +1,7 @@
 from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework import authentication, permissions, viewsets
 from accounts.models import Account
 from rest_framework.permissions import AllowAny
 from helpers import nonEmpty, missing
@@ -9,7 +9,7 @@ from reservations.models import Reservation, ReservationSerializer
 
 from properties.models import Property
 
-class ReservationViews(APIView):
+class ReservationViews(viewsets.ModelViewSet):
     """Api views for Creating, Getting, Updating and Deleting reservations within the system.
     
     Accepts POST: Create Reservation, GET: See reservation, PUT: Update Reservation, DELETE: Delete Reservation.
@@ -17,7 +17,8 @@ class ReservationViews(APIView):
     
     
     permission_classes = [AllowAny]
-    
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
     """
     Recall the Reservation Model:
         - state (Pending on initialization)
@@ -133,8 +134,12 @@ class ReservationViews(APIView):
         all_field = request.data.get('all')
 
         # only cares for true value
-        if all_field == "true": 
-             return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
+        if all_field == "true":
+            page = self.paginate_queryset(Reservation.objects.all())
+            if page is not None:
+                return Response(ReservationSerializer(page, many=True).data, status=200)
+            else:  
+                return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
 
         # handle reservation_id field
         if reservation_id is None:
