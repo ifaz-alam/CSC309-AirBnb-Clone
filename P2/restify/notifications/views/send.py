@@ -56,4 +56,5 @@ def sendNotification(request):
         return Response({'error': 'Invalid notification_type value.'}, status=status.HTTP_400_BAD_REQUEST)
 
     notification = Notification.objects.create(account=account, link=link, notification_type=notification_type)
+    notification.save()
     return Response({'success': 'Notification sent.'}, status=status.HTTP_200_OK)

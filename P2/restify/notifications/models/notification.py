@@ -34,6 +34,7 @@ class Notification(models.Model):
     notification_type = models.CharField(choices=NOTIFICATION_TYPE_CHOICES, max_length=50, default='test_notification')
 
     
+# specifies how to convert notification model instance to a JSON representation
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:

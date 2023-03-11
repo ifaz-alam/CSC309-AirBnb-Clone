@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'properties',
     'accounts',
     'rest_framework',
-    'images'
+    'images',
+    'reservations',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,5 @@ SIMPLE_JWT = {
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'media/'
+
+DATE_INPUT_FORMATS = ['%m-%d-%Y']
