@@ -26,12 +26,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('comments/', include('comments.urls', namespace='comments')),
     path('images/', include('images.urls', namespace='images')),
-<<<<<<< HEAD
-    path('properties/', include('properties.urls', namespace='properties'))
-=======
+    path('properties/', include('properties.urls', namespace='properties')),
     path('notifications/', include('notifications.urls', namespace='notifications')),
-    path('reservations/', include('reservations.urls', namespace='reservations')),
->>>>>>> 51753a158cec4e0e4f8e8a0b1c11f32379e38597
-    
-    
-] + static(settings.MEDIA_URL, ocument_root=settings.MEDIA_ROOT)
+    path('reservations/', include('reservations.urls', namespace='reservations')),  
+
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
