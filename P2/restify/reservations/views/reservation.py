@@ -6,6 +6,7 @@ from accounts.models import Account
 from rest_framework.permissions import AllowAny
 from helpers import nonEmpty, missing
 from reservations.models import Reservation, ReservationSerializer
+from django.db.models import Q
 
 from properties.models import Property
 
@@ -117,31 +118,67 @@ class ReservationViews(viewsets.ModelViewSet):
         """Get a reservation (or all) from the system.
 
         ### Fields:
-        "reservation_id" : integer
-        
-        "all" : boolean
-        
-        * if all is true, ignores reservation_id
+        reservation_id: Num
+        all: Bool
+        user: account username
+        filter_type: guest or host
+
+        * if all is true, ignores reservation_id.
+        user may input username and filter_type to narrow down the search
         
         Example request:
         {
             "reservation_id": "5",
-            "all": "false"
+            "all": "true",
+            "username": "Ifaz",
+            "filter_type": "guest" 
         }
+
+        if reservation_id is not given then 
         """
 
         reservation_id = request.data.get('reservation_id')
         all_field = request.data.get('all')
 
-        # only cares for true value
-        if all_field == "true":
-            page = self.paginate_queryset(Reservation.objects.all())
-            if page is not None:
-                return Response(ReservationSerializer(page, many=True).data, status=200)
-            else:  
-                return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
+        username = request.data.get('username')
+        filter_type = request.data.get('filter_type')
 
-        # handle reservation_id field
+  
+        if all_field and all_field not in ["true", "false"]:
+            return Response({'error': 'all field all must be either true or false'}, status=400)
+        
+        
+        if all_field == "true":
+            if username is None:
+                # all other fields are ignored
+                page = self.paginate_queryset(Reservation.objects.all())
+                if page is not None:
+                    return Response(ReservationSerializer(page, many=True).data, status=200)
+                else:  
+                    return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
+            else:                    
+                if filter_type == 'guest':
+                    page = self.paginate_queryset(Reservation.objects.filter(guest__username=username))
+                    if page is not None:
+                        return Response(ReservationSerializer(page, many=True).data, status=200)
+                    else:  
+                        return Response(ReservationSerializer(Reservation.objects.filter(guest__username=username), many=True).data, status=200)
+                # If filter_type is host, filter by host username
+                elif filter_type == 'host':
+                    page = self.paginate_queryset(Reservation.objects.filter(host__username=username))
+                    if page is not None:
+                        return Response(ReservationSerializer(page, many=True).data, status=200)
+                    else:  
+                        return Response(ReservationSerializer(Reservation.objects.filter(host__username=username), many=True).data, status=200)
+                # If filter_type is not given, return all reservations
+                else:
+                    page = self.paginate_queryset(Reservation.objects.filter(Q(guest__username=username) | Q(host__username=username)))
+                    if page is not None:
+                        return Response(ReservationSerializer(page, many=True).data, status=200)
+                    else:  
+                        return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
+
+        # search by reservation id
         if reservation_id is None:
             return Response({'error': 'reservation_id is required'}, status=400)
         else:
@@ -154,13 +191,19 @@ class ReservationViews(viewsets.ModelViewSet):
         """
         Update the reservation with the given reservation_id
 
-        Mandatory field: reservation_id
+        Mandatory fields: reservation_id
+        
+        Optional:
+        - State: check model
+        - paid: boolean
+        - start_date: string in the form MM-DD-YYYY
+        _ end_date: string in the form MM-DD-YYYY
 
         Sample PUT Json data:
         {
             "reservation_id" : "1",
-            "state" : "",
-            "paid" : "",
+            "state" : "approved",
+            "paid" : "true"
         }
         """
         reservation_id = request.data.get('reservation_id')
@@ -174,11 +217,13 @@ class ReservationViews(viewsets.ModelViewSet):
             return Response({'error': 'Reservation with given id does not exist'}, status=400)
         
         # Validate state field
-        valid_states = [state[0] for state in Reservation.State.choices]
+        valid_states = [state[0].lower() for state in Reservation.State.choices]
         state = request.data.get('state')
-        if state is not None and state not in valid_states:
-            return Response({'error': 'reservation_id is required'}, status=400)
-        reservation.state = state
+        if state is not None:
+            if state.lower() not in valid_states:
+                return Response({'error': 'Invalid state given. must be one of pending, approved, denied, or terminated'}, status=400)
+            else:
+                reservation.state = state.upper()
 
         # Validate paid field
         paid = request.data.get('paid')
@@ -186,21 +231,46 @@ class ReservationViews(viewsets.ModelViewSet):
         if paid is not None:
             if paid.lower() == "true":
                 reservation.paid = True
-            elif paid.lower() == False:
+            elif paid.lower() == "false":
                 reservation.paid = paid
             else:
                 return Response({'error': 'the value for paid given is not a valid format. it must either be true or false'}, status=400)
 
+        start = request.data.get('start_date')
+
+        start_date = None
+        if start:
+            # Validate start date and attempt to convert it to datetime in format MM-DD-YYYY
+            try:
+                start_date = datetime.strptime(start, '%m-%d-%Y').date()
+            except:
+                return Response({'error': 'Invalid start date format. Expected format: MM-DD-YYYY'}, status=400)
+
+        
+        end = request.data.get('end_date')
+
+        end_date = None
+        if end:
+            # Validate end date and attempt to convert it to datetime in format MM-DD-YYYY
+            try:
+                end_date = datetime.strptime(start, '%m-%d-%Y').date()
+            except:
+                return Response({'error': 'Invalid end date format. Expected format: MM-DD-YYYY'}, status=400)
+
+        if start_date:
+            reservation.start_date = start_date
+        if end_date:
+            reservation.end_date = end_date
+
+        if not reservation.start_date <= reservation.end_date:
+            return Response({'error': f'Invalid bounds on start date and end date: After the changes we have: Start: {reservation.start_date}, End: {reservation.end_date}'}, status=400)
+
+
+
         reservation.save()
-
-
 
         # success
         return Response(ReservationSerializer(reservation).data, status=200)
-    
-
-
-
 
 
     def delete(self, request):
