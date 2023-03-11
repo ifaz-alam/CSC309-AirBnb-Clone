@@ -2,6 +2,8 @@ from django.db import models
 from properties.models import Property
 
 from datetime import date, timedelta
+from accounts.serializers import AccountSerializer
+from properties.serializers import PropertySerializer
 
 from accounts.models import Account
 
@@ -29,19 +31,14 @@ class Reservation(models.Model):
     # Property.objects.get()
 
 class ReservationSerializer(serializers.ModelSerializer):
-    start_date = serializers.DateField()
-    end_date = serializers.DateField()
-    guest = serializers.CharField(source='guest.username')
-    host = serializers.CharField(source='host.username')
-    property_description = serializers.CharField(source='property.description')
-
-    reservation_id = serializers.IntegerField(source='id')
-    property_id = serializers.IntegerField(source='property.id')
-    guest_id = serializers.IntegerField(source='guest.id', read_only=True)
-    host_id = serializers.IntegerField(source='host.id', read_only=True)
+    start_date = serializers.DateField(format='%m-%d-%Y')
+    end_date = serializers.DateField(format='%m-%d-%Y')
+    guest = AccountSerializer()
+    host = AccountSerializer()
+    property = PropertySerializer()
 
 
 
     class Meta:
         model = Reservation
-        fields = ['reservation_id', 'property_id', 'property_description', 'state', 'paid', 'start_date', 'end_date', 'guest', 'guest_id', 'host', 'host_id']
+        fields = ['pk', 'state', 'paid', 'start_date', 'end_date', 'guest', 'host', 'property']
