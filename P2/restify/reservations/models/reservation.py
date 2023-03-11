@@ -34,11 +34,10 @@ class ReservationSerializer(serializers.ModelSerializer):
     start_date = serializers.DateField(format='%m-%d-%Y')
     end_date = serializers.DateField(format='%m-%d-%Y')
     guest = AccountSerializer()
-    host = AccountSerializer()
     property = PropertySerializer()
 
 
 
     class Meta:
         model = Reservation
-        fields = ['pk', 'state', 'paid', 'start_date', 'end_date', 'guest', 'host', 'property']
+        fields = ['pk', 'state', 'paid', 'start_date', 'end_date', 'guest', 'property']
