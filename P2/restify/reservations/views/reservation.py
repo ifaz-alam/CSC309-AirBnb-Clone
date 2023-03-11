@@ -75,6 +75,11 @@ class ReservationViews(APIView):
             else:
                 host = property.owner
 
+        # check if reservation already exists for this guest and property
+        existing_reservation = Reservation.objects.filter(guest=guest, property=property).first()
+        if existing_reservation:
+            return Response({'error': 'Reservation already exists for this guest and property'}, status=400)
+
         start = request.data.get('start_date')
 
         start_date = None
@@ -111,7 +116,7 @@ class ReservationViews(APIView):
         """Get a reservation (or all) from the system.
 
         ### Fields:
-        "reservation_id" : 1
+        "reservation_id" : integer
         
         "all" : boolean
         
@@ -119,7 +124,7 @@ class ReservationViews(APIView):
         
         Example request:
         {
-            "pk": "5",
+            "reservation_id": "5",
             "all": "false"
         }
         """
@@ -129,7 +134,7 @@ class ReservationViews(APIView):
 
         # only cares for true value
         if all_field == "true": 
-             return Response(ReservationSerializer(Reservation.objects.all()).data, status=200)
+             return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
 
         # handle reservation_id field
         if reservation_id is None:
@@ -139,8 +144,6 @@ class ReservationViews(APIView):
             if reservation is None:
                 return Response({'error': 'Reservation with given id does not exist'}, status=400)
             return Response(ReservationSerializer(reservation).data, status=200)
-
-
         
     def put(self, request):
         """
