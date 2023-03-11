@@ -5,6 +5,7 @@ from .update import updateProperty
 from .delete import deleteProperty
 from .get import getProperty
 
+#should inherit model.viewsets instead of apiview
 class PropertyViews(APIView):
     """API views for getting, creating, updating, and deleting properties. 
     accepts get, post, put, and delete requests respectively.

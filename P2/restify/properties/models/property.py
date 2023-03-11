@@ -10,9 +10,7 @@ class Property(models.Model):
     """
     Represents a Property. 
     has implicit fields from foreign keys:
-    owner: the account who owns the property
-    images: images of the property 
-    current_renter: the user who is currently renting the property
+    Reservation: the reservation of this property, can be null if a reservation hasnt been made yet. 
 
 
     The following amenities must be stated(grabbed from airbnb.com): additional amenities can be added in the description of the property,
@@ -20,6 +18,7 @@ class Property(models.Model):
     
     bathrooms: integer
     bedrooms: integer
+    the following amenities can be stated if they exist, defaults to false
     backyard: boolean
     pool: boolean
     wifi: boolean
@@ -29,21 +28,21 @@ class Property(models.Model):
 
     -order-by will be price and max_guests
     -filter by will be price, max_guests, location, and rating
+    
+    atleast one image should be required.
     """
     # TODO: blank=true to anything allowed to be null
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='properties')
     #TODO: multiple images
     images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(max_length=1000)
-    rating = models.IntegerField(null=True, validators=[
+    rating = models.IntegerField(null=True, blank=True, validators=[
             MaxValueValidator(100),
             MinValueValidator(1)
         ]) 
     # rating can be null if the property hasnt been rated yet. #TODO set default to null
     location = models.CharField(max_length=200)
     #available_times= models.DateTimeField(required=True)
-    #stated in piazza bonus to do price per day/month
-    #prices_by_month = models.JSONField(required=True)
     price_per_night = models.IntegerField(validators=[
             MinValueValidator(1)
         ])
@@ -62,11 +61,13 @@ class Property(models.Model):
     comments = GenericRelation(Comment, related_query_name='property')
 
     #Amenities
+    #checkout int list validator
     bathrooms = models.IntegerField()
     bedrooms = models.IntegerField()
-    backyard = models.BooleanField()
-    pool = models.BooleanField()
-    wifi = models.BooleanField()
-    kitchen = models.BooleanField()
-    free_parking = models.BooleanField()
-    pets_allowed = models.BooleanField()
+    #Amenities@piazza
+    backyard = models.BooleanField(default=False)
+    pool = models.BooleanField(default=False)
+    wifi = models.BooleanField(default=False)
+    kitchen = models.BooleanField(default=False)
+    free_parking = models.BooleanField(default=False)
+    pets_allowed = models.BooleanField(default=False)

@@ -25,7 +25,8 @@ urlpatterns = [
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('comments/', include('comments.urls', namespace='comments')),
-    path('images/', include('images.urls', namespace='images'))
+    path('images/', include('images.urls', namespace='images')),
+    path('properties/', include('properties.urls', namespace='properties'))
     
     
 ] + static(settings.MEDIA_URL, ocument_root=settings.MEDIA_ROOT)
