@@ -1,11 +1,13 @@
-import datetime
+from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
-from ..models import Account
+from accounts.models import Account
 from rest_framework.permissions import AllowAny
 from helpers import nonEmpty, missing
 from reservations.models import Reservation, ReservationSerializer
+
+from properties.models import Property
 
 class ReservationViews(APIView):
     """Api views for Creating, Getting, Updating and Deleting reservations within the system.
@@ -76,29 +78,29 @@ class ReservationViews(APIView):
         start = request.data.get('start_date')
 
         start_date = None
-        if not start:
+        if start is None:
             return Response({'error': 'start_date field is required.'}, status=400)
         else:
             # Validate start date and attempt to convert it to datetime in format MM-DD-YYYY
             try:
-                start_date = datetime.strptime(start, '%m-%d-%Y')
+                start_date = datetime.strptime(start, '%m-%d-%Y').date()
             except:
                 return Response({'error': 'Invalid start date format. Expected format: MM-DD-YYYY'}, status=400)
 
         
         end = request.data.get('end_date')
         end_date = None
-        if not end:
+        if end is None:
             return Response({'error': 'end_date field is required.'}, status=400)
         else:
             # Validate end date and attempt to convert it to datetime in format MM-DD-YYYY
             try:
-                end_date = datetime.strptime(start, '%m-%d-%Y')
+                end_date = datetime.strptime(start, '%m-%d-%Y').date()
             except:
                 return Response({'error': 'Invalid end date format. Expected format: MM-DD-YYYY'}, status=400)
 
         
-        reservation = Reservation.objects.create(guest=guest, host=host, property=property)
+        reservation = Reservation.objects.create(guest=guest, host=host, property=property, start_date=start_date, end_date=end_date)
         reservation.save()
 
         return Response(ReservationSerializer(reservation).data, status=200)
@@ -151,8 +153,6 @@ class ReservationViews(APIView):
             "reservation_id" : "1",
             "state" : "",
             "paid" : "",
-
-            
         }
         """
         reservation_id = request.data.get('reservation_id')

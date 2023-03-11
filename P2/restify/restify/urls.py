@@ -26,7 +26,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('comments/', include('comments.urls', namespace='comments')),
     path('images/', include('images.urls', namespace='images')),
-    path('notifications/', include('notifications.urls', namespace='notifications'))
+    path('notifications/', include('notifications.urls', namespace='notifications')),
+    path('reservations/', include('reservations.urls', namespace='reservations')),
     
     
 ] + static(settings.MEDIA_URL, ocument_root=settings.MEDIA_ROOT)
