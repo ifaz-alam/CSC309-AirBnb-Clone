@@ -1,5 +1,11 @@
 venv
 *.sqlite3
 __pycache__
+<<<<<<< HEAD
 **/migrations/
 **/migrations/*.py
+=======
+*/*/migrations/
+*/*/migrations/*.py
+**/migrations/
+>>>>>>> master
