@@ -3,6 +3,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from comments.models import Comment
 from images.models import Image
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 class Account(AbstractUser):
     """An account within the system
@@ -21,7 +23,10 @@ class Account(AbstractUser):
     """
     phone_number = models.CharField(null=False, blank=False, max_length=12)
     biography = models.CharField(blank=True, null=True, max_length=500)
-    guest_rating = models.IntegerField(blank=False, null=False, default=0)
+    guest_rating = models.IntegerField(blank=False, null=False, default=0, validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ])
     profile_picture = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, blank=True)
     
     comments = GenericRelation(Comment, related_query_name='account')

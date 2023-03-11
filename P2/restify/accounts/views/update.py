@@ -24,7 +24,6 @@ def updateAccount(request):
     "last_name": "Blackman",
     "email": "austin@mail.com",
     "username": "Austin",
-    "password": "password",
     "phone_number": "555-555-5555",
     "biography": "bio",
     "guest_rating" : "0",
@@ -40,7 +39,7 @@ def updateAccount(request):
     required_fields = {"username", "first_name",
                         "last_name", "phone_number", "email", "password_1", "password_2", "biography", "guest_rating", "email", "profile_picture"}
     non_empty_fields = {"username", "first_name",
-                        "last_name", "phone_number", "email"}
+                        "last_name", "phone_number", "email", "guest_rating"}
 
     data = request.data
 
@@ -56,13 +55,26 @@ def updateAccount(request):
     elif len(missing_fields['missing_required_fields']) != 0:
         return Response(missing_fields, status=400)
 
-    # Update non-password fields
     currentUser = request.user
+
+    if (data['guest_rating'] != ''):
+        print('in if statmeent')
+        try:
+            if(int(data['guest_rating']) < 0 or int(data['guest_rating']) > 5):
+                return Response({'value_error': 'rating must be between [0,5] inclusive'}, status=400)
+            else:
+                currentUser.guest_rating = int(data['guest_rating'])
+        except:
+            return Response({'value_error': 'rating must be an integer'}, status=400)
+
+    # Update non-password fields
     currentUser.first_name = data['first_name']
     currentUser.last_name = data['last_name']
     currentUser.email = data['email']
     currentUser.biography = data['biography']
-    currentUser.guest_rating = data['guest_rating']
+    currentUser.phone_number = data['phone_number'] 
+    
+    
 
     # Check if username or email is already in use
     if (request.user.username != data['username']):
@@ -85,7 +97,7 @@ def updateAccount(request):
         if len(errors) != 0:
             return Response(errors, status=400)
         else:
-            Account.set_password(data['password_1'])
+            currentUser.set_password(data['password_1'])
     
     if data['profile_picture'] != '':
         try:
