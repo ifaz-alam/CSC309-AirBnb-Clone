@@ -120,7 +120,7 @@ class ReservationViews(viewsets.ModelViewSet):
         ### Fields:
         reservation_id: Num
         all: Bool
-        user: account username
+        username: account username
         filter_type: guest or host
 
         * if all is true, ignores reservation_id.
@@ -144,7 +144,7 @@ class ReservationViews(viewsets.ModelViewSet):
         filter_type = request.data.get('filter_type')
 
   
-        if not isinstance(all_field, bool):
+        if all_field is not None and not isinstance(all_field, bool):
             return Response({'error': 'all field all must be either true or false'}, status=400)
         
         
