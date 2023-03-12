@@ -31,14 +31,16 @@ class Property(models.Model):
     
     atleast one image should be required.
     """
+    #TODO add address change location to be just city
+    name = models.CharField(max_length=100)
     # TODO: blank=true to anything allowed to be null
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='properties')
     #TODO: multiple images
     images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(max_length=1000)
     rating = models.IntegerField(null=True, blank=True, validators=[
-            MaxValueValidator(100),
-            MinValueValidator(1)
+            MaxValueValidator(5),
+            MinValueValidator(0)
         ]) 
     # rating can be null if the property hasnt been rated yet. #TODO set default to null
     location = models.CharField(max_length=200)
@@ -60,11 +62,10 @@ class Property(models.Model):
     banned = models.ManyToManyField(Account, related_name="banned_properties")
     comments = GenericRelation(Comment, related_query_name='property')
 
-    #Amenities
     #checkout int list validator
     bathrooms = models.IntegerField()
     bedrooms = models.IntegerField()
-    #Amenities@piazza
+    #Amenities@
     backyard = models.BooleanField(default=False)
     pool = models.BooleanField(default=False)
     wifi = models.BooleanField(default=False)

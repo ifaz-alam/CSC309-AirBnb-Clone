@@ -9,11 +9,12 @@ def createProperty(request):
     
     Accepts a POST request.
     
-    Required fields: "owner", "description",
+    Required fields: "name", "owner", "description",
                         "location", "price_per_night", "max_guests", "bathrooms", "bedrooms
 
     Example post data:
     {
+    "name": "a very nice place to stay",
     "owner": "1",
     "description": "this is a nice place to stay",
     "location": "Toronto",
@@ -23,7 +24,7 @@ def createProperty(request):
     "bedrooms": "2"
     }
     """
-    required_fields = {"owner", "description", "location", "price_per_night", "max_guests", "bathrooms", "bedrooms"}
+    required_fields = {"name", "owner", "description", "location", "price_per_night", "max_guests", "bathrooms", "bedrooms"}
 
     # Determine if any required fields are missing. uses missing helper function
     missing_fields = missing(request.data, required_fields)
@@ -38,7 +39,7 @@ def createProperty(request):
     #check that int fields are sent as ints.
     try:
         property = Property(
-        owner=owner_object, 
+        name=request.data['name'], owner=owner_object, 
         description=request.data['description'], location=request.data['location'], price_per_night=int(request.data['price_per_night']), 
         max_guests=int(request.data['max_guests']), bathrooms=int(request.data['bathrooms']), bedrooms=int(request.data['bedrooms']))
     except: 
