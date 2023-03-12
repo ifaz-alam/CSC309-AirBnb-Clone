@@ -51,8 +51,11 @@ class CommentViews(viewsets.ModelViewSet):
 
         errors = {}
 
-        missing_fields = missing(data, required)
-        empty_fields = nonEmpty(data, non_empty)
+        try:
+            missing_fields = missing(data, required)
+            empty_fields = nonEmpty(data, non_empty)
+        except:
+            return Response({"key_error":"Check payload for wrong fields"}, status=400)
 
         if len(empty_fields['empty_fields']) != 0:
             return Response(empty_fields, status=400)

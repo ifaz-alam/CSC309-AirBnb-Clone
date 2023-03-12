@@ -14,7 +14,7 @@ class CommentObjectRelatedField(serializers.RelatedField):
         if (isinstance(value, Account)):
             return AccountSerializerNoComments(value).data
         elif (isinstance(value, Property)):
-            pass
+            return f"Property: {value.pk}"
         elif (isinstance(value, Comment)):
             return CommentSerializerNoParent(value).data
         
