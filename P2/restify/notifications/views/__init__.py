@@ -1,3 +1,3 @@
 from .send import sendNotification
-from .notifications import ListNotifications, ListNotificationsUser
+from .notifications import NotificationViews
 from .delete import DeleteNotification

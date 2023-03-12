@@ -144,11 +144,11 @@ class ReservationViews(viewsets.ModelViewSet):
         filter_type = request.data.get('filter_type')
 
   
-        if all_field and all_field not in ["true", "false"]:
+        if not isinstance(all_field, bool):
             return Response({'error': 'all field all must be either true or false'}, status=400)
         
         
-        if all_field == "true":
+        if all_field is True:
             if username is None:
                 # all other fields are ignored
                 page = self.paginate_queryset(Reservation.objects.all())
@@ -180,7 +180,7 @@ class ReservationViews(viewsets.ModelViewSet):
 
         # search by reservation id
         if reservation_id is None:
-            return Response({'error': 'reservation_id is required'}, status=400)
+            return Response({'error': 'All was not true, so reservation_id is required'}, status=400)
         else:
             reservation = Reservation.objects.filter(id=reservation_id).first()
             if reservation is None:
@@ -203,7 +203,7 @@ class ReservationViews(viewsets.ModelViewSet):
         {
             "reservation_id" : "1",
             "state" : "approved",
-            "paid" : "true"
+            "paid" : true
         }
         """
         reservation_id = request.data.get('reservation_id')
@@ -229,9 +229,7 @@ class ReservationViews(viewsets.ModelViewSet):
         paid = request.data.get('paid')
 
         if paid is not None:
-            if paid.lower() == "true":
-                reservation.paid = True
-            elif paid.lower() == "false":
+            if paid is True or paid is False:
                 reservation.paid = paid
             else:
                 return Response({'error': 'the value for paid given is not a valid format. it must either be true or false'}, status=400)
