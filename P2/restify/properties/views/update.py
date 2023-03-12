@@ -1,4 +1,4 @@
 from rest_framework.response import Response
 
-def updateProperty(response):
+def updateProperty(request):
     pass
