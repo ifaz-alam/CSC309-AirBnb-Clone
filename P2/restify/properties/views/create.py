@@ -1,21 +1,26 @@
 from rest_framework.response import Response
 from ..models import Property
 from helpers import missing
+from helpers.check_options import check_optional_fields
 from properties.serializers.property_serializer import PropertySerializer
 from accounts.models import Account
+from images.models import Image
 
 def createProperty(request):
     """Register a property within the system
     
     Accepts a POST request.
     
-    Required fields: "name", "owner", "description",
+    Required fields: "name", "owner", "images", "description",
                         "location", "price_per_night", "max_guests", "bathrooms", "bedrooms
 
+    optional fields: "rating", "backyard", "pool", "wifi", "kitchen", "free_parking",
+                        "pets_allowed"
     Example post data:
     {
     "name": "a very nice place to stay",
     "owner": "1",
+    "images": "1",
     "description": "this is a nice place to stay",
     "location": "Toronto",
     "price_per_night": "200",
@@ -23,27 +28,68 @@ def createProperty(request):
     "bathrooms": "1",
     "bedrooms": "2"
     }
+    Example post data with some optional fields:
+    {
+    "name": "a very nice place to stay",
+    "owner": "1",
+    "images": "1",
+    "description": "this is a nice place to stay",
+    "location": "Toronto",
+    "price_per_night": "200",
+    "max_guests": "4",
+    "bathrooms": "1",
+    "bedrooms": "2",
+    "backyard": "true",
+    "pool": "true",
+    "wifi": "false",
+    "pets_allowed" "false"
+    }
     """
-    required_fields = {"name", "owner", "description", "location", "price_per_night", "max_guests", "bathrooms", "bedrooms"}
+    #could probably just use guest_username = request.data.get('guest')
+    #rating should be handled in reservation and comments
+    #check if other optional fields are given
+    optional_fields = ['backyard', 'pool', 'wifi', 'kitchen', 'free_parking', 'pets_allowed']
+    options = check_optional_fields(request, optional_fields)
+
+    required_fields = {"name", "owner", "images", "description", "location", "price_per_night", "max_guests", "bathrooms", "bedrooms"}
 
     # Determine if any required fields are missing. uses missing helper function
     missing_fields = missing(request.data, required_fields)
     if len(missing_fields['missing_required_fields']) != 0:
         return Response(missing_fields, status=400)
-    #check if owner exists then reference it by primary key
+    
+    # TODO: determine if any required fields are empty uses empty helper function
+    
+    #check if ints are ints
     try:
-        owner_object = Account.objects.get(pk=int(request.data['owner']))
+        owner_pk = int(request.data['owner'])
+        image_pk = int(request.data['images'])
+        #price per night
+        ppn = int(request.data['price_per_night'])
+        #max_guests
+        mg = int(request.data['max_guests'])
+        baths = int(request.data['bathrooms'])
+        beds = int(request.data['bedrooms'])
+    except:
+        return Response({"error" : "expected owner, image, price per night, max guests, bathrooms, and bedrooms \
+                         to be an integers, one or more, were not"}, status=400)
+    
+    #check if owner exists
+    try:
+        owner_object = Account.objects.get(pk=owner_pk)
     except:
         return Response({"error" : "user not found"}, status=404)
-    #do same as above for images
-    #check that int fields are sent as ints.
+    #check if the image exists
     try:
-        property = Property(
-        name=request.data['name'], owner=owner_object, 
-        description=request.data['description'], location=request.data['location'], price_per_night=int(request.data['price_per_night']), 
-        max_guests=int(request.data['max_guests']), bathrooms=int(request.data['bathrooms']), bedrooms=int(request.data['bedrooms']))
-    except: 
-        return Response({"error" : "expected integer, got something else"}, status=400)
+        images_object = Image.objects.get(pk=image_pk)
+    except:
+        return Response({"error" : "image not found"}, status=404)
+    
+    property = Property(
+    name=request.data['name'], owner=owner_object, images=images_object, description=request.data['description'], 
+    location=request.data['location'], price_per_night=ppn, max_guests=mg, bathrooms=baths, bedrooms=beds, 
+    backyard=options['backyard'], pool=options['pool'], wifi=options['wifi'], kitchen=options['kitchen'], 
+    free_parking=options['free_parking'], pets_allowed=options['pets_allowed'])
     property.save()
     
     return Response(PropertySerializer(property).data, status=200)
