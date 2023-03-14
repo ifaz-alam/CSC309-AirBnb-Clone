@@ -9,7 +9,8 @@ class PropertySerializer(serializers.ModelSerializer):
     """
     owner = AccountSerializer()
     comments = CommentSerializer(many=True)
-    images= ImageUploadSerializer(many=True)
+    #removed many=True was causing an issue
+    images= ImageUploadSerializer()
     
     class Meta:
         model = Property

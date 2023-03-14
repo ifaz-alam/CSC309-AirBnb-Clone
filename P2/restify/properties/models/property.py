@@ -36,7 +36,9 @@ class Property(models.Model):
     # TODO: blank=true to anything allowed to be null
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='properties')
     #TODO: multiple images
-    images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True, blank=True)
+    #image.get_objects(pk=1)
+    # was images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True, blank=True)
+    images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True)
     description = models.TextField(max_length=1000)
     rating = models.IntegerField(null=True, blank=True, validators=[
             MaxValueValidator(5),
