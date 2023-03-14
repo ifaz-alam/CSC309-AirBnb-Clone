@@ -45,6 +45,7 @@ def createProperty(request):
     "pets_allowed" "false"
     }
     """
+    #could probably just use guest_username = request.data.get('guest')
     #rating should be handled in reservation and comments
     #check if other optional fields are given
     optional_fields = ['backyard', 'pool', 'wifi', 'kitchen', 'free_parking', 'pets_allowed']
