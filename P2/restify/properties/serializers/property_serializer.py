@@ -9,13 +9,12 @@ class PropertySerializer(serializers.ModelSerializer):
     """
     owner = AccountSerializer()
     comments = CommentSerializer(many=True)
-    #removed many=True was causing an issue
     images= ImageUploadSerializer()
     
     class Meta:
         model = Property
         
         fields = ['pk', 'address', 'name', 'owner', 'images', 'description', 'rating', 'location', 
-                  'price_per_night', 'max_guests', 'current_status', 'current_renter', 
+                  'price_per_night', 'max_guests', 'current_status', 'current_renter', 'reservations',
                   'banned', 'comments', 'bathrooms', 'bedrooms', 'backyard', 'pool', 'wifi', 
                   'kitchen', 'free_parking', 'pets_allowed']

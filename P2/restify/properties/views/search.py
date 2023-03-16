@@ -48,6 +48,7 @@ class SearchView(viewsets.ModelViewSet):
         }
         """
         #TODO: add checks to ensure if pagination not required return it all
+        #TODO: ensure filter and sort by work in cohesion
         #for now only 1 of sort or order is supported
         #properties = Property.objects.all()
         #if not request.data.get('filter') and not request.data.get('sort'):

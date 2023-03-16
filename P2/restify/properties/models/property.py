@@ -12,6 +12,20 @@ class Property(models.Model):
     has implicit fields from foreign keys:
     Reservation: the reservation of this property, can be null if a reservation hasnt been made yet.
     
+    ##fields address: str
+    name: str
+    owner: User -> pk int of that user
+    images: Image -> pk int of that image
+    description: str
+    rating: int
+    location: str
+    price_per_night: int
+    max_guests: int
+    current_status: str: "available" or "reserved"
+    current_renter: User
+    banned: User -> pk int of that user
+
+    
     bathrooms: integer
     bedrooms: integer
 
@@ -30,21 +44,15 @@ class Property(models.Model):
     
     atleast one image should be required.
     """
-    #TODO add address change location to be just city
     address = models.CharField(max_length=120)
     name = models.CharField(max_length=100)
-    # TODO: blank=true to anything allowed to be null
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='properties')
-    #TODO: multiple images
-    #image.get_objects(pk=1)
-    # was images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True, blank=True)
     images = models.ForeignKey(Image,on_delete=models.SET_NULL, null=True)
     description = models.TextField(max_length=1000)
     rating = models.IntegerField(null=True, blank=True, validators=[
             MaxValueValidator(5),
             MinValueValidator(0)
         ]) 
-    # rating can be null if the property hasnt been rated yet. #TODO set default to null
     location = models.CharField(max_length=200)
     #available_times= models.DateTimeField(required=True)
     price_per_night = models.IntegerField(validators=[
@@ -60,16 +68,14 @@ class Property(models.Model):
 
     )
     current_status = models.CharField(choices=status_choices, default="available", max_length=12)
-    current_renter = models.ForeignKey(Account,null=True, on_delete=models.SET_NULL, related_name="rented_properties", blank =True)
-    #reservations implicitly declared in reservation model, 
-    #reservations = models.ForeignKey(Reservation, null=True)
+    current_renter = models.ForeignKey(Account,null=True, on_delete=models.SET_NULL, related_name="rented_properties", blank =True) 
+    
     banned = models.ManyToManyField(Account, related_name="banned_properties")
     comments = GenericRelation(Comment, related_query_name='property')
 
-    #checkout int list validator
     bathrooms = models.IntegerField()
     bedrooms = models.IntegerField()
-    #Amenities@
+    #Amenities
     backyard = models.BooleanField(default=False)
     pool = models.BooleanField(default=False)
     wifi = models.BooleanField(default=False)
