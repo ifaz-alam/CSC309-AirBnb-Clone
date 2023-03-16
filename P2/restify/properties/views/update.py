@@ -79,7 +79,7 @@ def updateProperty(request):
     current_status = request.data.get('current_status')
     current_renter = request.data.get('current_renter')
     # need to figure out how to make this a list of some sort
-    banned = request.data.get('owner')
+    banned = request.data.get('banned')
     bathrooms = request.data.get('bathrooms')
     bedrooms = request.data.get('bedrooms')
     if address:
@@ -87,7 +87,7 @@ def updateProperty(request):
     if name:
         property.name = name
     if owner:
-        property.owner = Account.objects.get(pk=owner)
+        property.owner = owner
     if images:
         property.images = Image.objects.get(pk=images)
     if description:

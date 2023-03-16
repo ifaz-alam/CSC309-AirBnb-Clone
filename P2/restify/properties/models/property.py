@@ -10,14 +10,11 @@ class Property(models.Model):
     """
     Represents a Property. 
     has implicit fields from foreign keys:
-    Reservation: the reservation of this property, can be null if a reservation hasnt been made yet. 
-
-
-    The following amenities must be stated(grabbed from airbnb.com): additional amenities can be added in the description of the property,
-    but wont be searchable or filterable
+    Reservation: the reservation of this property, can be null if a reservation hasnt been made yet.
     
     bathrooms: integer
     bedrooms: integer
+
     the following amenities can be stated if they exist, defaults to false
     backyard: boolean
     pool: boolean
@@ -25,6 +22,8 @@ class Property(models.Model):
     kitchen: boolean
     free_parking: boolean
     pets_allowed: boolean
+
+    banned holds the pks of the banned users.
 
     -order-by will be price and max_guests
     -filter by will be price, max_guests, location, and rating

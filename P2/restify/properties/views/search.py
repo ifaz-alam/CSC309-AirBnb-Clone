@@ -54,7 +54,7 @@ class SearchView(viewsets.ModelViewSet):
         filter_by = request.data.get('filter_by')
         sort_by = request.data.get('sort_by')
         filter_magnitude = request.data.get('filter_magnitude')
-        sort_direction = request.data.get('sort direction')
+        sort_direction = request.data.get('sort_direction')
         # verify sort direction is ascending or descending
         if sort_direction:
             if sort_direction == 'ascending':
