@@ -12,14 +12,12 @@ def createProperty(request):
     
     Accepts a POST request.
     
-    Required fields: "name", "owner", "images", "description",
+    Required fields: "address", "name", "owner", "images", "description",
                         "location", "price_per_night", "max_guests", "bathrooms", "bedrooms
 
-    optional fields: "rating", "backyard", "pool", "wifi", "kitchen", "free_parking",
-                        "pets_allowed"
+    optional fields: "backyard", "pool", "wifi", "kitchen", "free_parking", "pets_allowed"
     Example post data:
     {
-    ""
     "address": "308 Negra Arroyo Lane, Albuquerque, New Mexico. 87104",
     "name": "a very nice place to stay",
     "owner": "1",
@@ -49,6 +47,7 @@ def createProperty(request):
     "pets_allowed" "false"
     }
     """
+    #cannot create a property with a rating, rating must be added in update
     #could probably just use guest_username = request.data.get('guest')
     #rating should be handled in reservation and comments
     #check if other optional fields are given

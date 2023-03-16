@@ -99,11 +99,7 @@ class SearchView(viewsets.ModelViewSet):
             
             if filter_by == 'location':
                 #verify filter_magnitude is given and is an int
-                try:
-                    rating_int = int(filter_magnitude)
-                except:
-                    return Response({'error': 'expected filter magnitude to be an int, got something else'}, status=400)
-                page = self.paginate_queryset(Property.objects.filter(rating=rating_int))
+                page = self.paginate_queryset(Property.objects.filter(location=filter_magnitude))
                 return Response(PropertySerializer(page, many=True).data)
         
         elif sort_by:
