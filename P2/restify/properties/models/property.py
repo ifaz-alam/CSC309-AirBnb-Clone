@@ -32,6 +32,7 @@ class Property(models.Model):
     atleast one image should be required.
     """
     #TODO add address change location to be just city
+    address = models.CharField(max_length=120)
     name = models.CharField(max_length=100)
     # TODO: blank=true to anything allowed to be null
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='properties')
@@ -50,7 +51,9 @@ class Property(models.Model):
     price_per_night = models.IntegerField(validators=[
             MinValueValidator(1)
         ])
-    max_guests = models.IntegerField()
+    max_guests = models.IntegerField(validators=[
+            MinValueValidator(1)
+        ])
     
     status_choices = (
         ("available", "available"),

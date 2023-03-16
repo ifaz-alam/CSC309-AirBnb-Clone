@@ -5,6 +5,7 @@ from helpers.check_options import check_optional_fields
 from properties.serializers.property_serializer import PropertySerializer
 from accounts.models import Account
 from images.models import Image
+from django.core.exceptions import ValidationError
 
 def createProperty(request):
     """Register a property within the system
@@ -18,6 +19,8 @@ def createProperty(request):
                         "pets_allowed"
     Example post data:
     {
+    ""
+    "address": "308 Negra Arroyo Lane, Albuquerque, New Mexico. 87104",
     "name": "a very nice place to stay",
     "owner": "1",
     "images": "1",
@@ -30,6 +33,7 @@ def createProperty(request):
     }
     Example post data with some optional fields:
     {
+    "address": "308 Negra Arroyo Lane, Albuquerque, New Mexico. 87104",
     "name": "a very nice place to stay",
     "owner": "1",
     "images": "1",
@@ -51,7 +55,7 @@ def createProperty(request):
     optional_fields = ['backyard', 'pool', 'wifi', 'kitchen', 'free_parking', 'pets_allowed']
     options = check_optional_fields(request, optional_fields)
 
-    required_fields = {"name", "owner", "images", "description", "location", "price_per_night", "max_guests", "bathrooms", "bedrooms"}
+    required_fields = {"address", "name", "owner", "images", "description", "location", "price_per_night", "max_guests", "bathrooms", "bedrooms"}
 
     # Determine if any required fields are missing. uses missing helper function
     missing_fields = missing(request.data, required_fields)
@@ -85,11 +89,15 @@ def createProperty(request):
     except:
         return Response({"error" : "image not found"}, status=404)
     
-    property = Property(
+    property = Property(address=request.data['address'],
     name=request.data['name'], owner=owner_object, images=images_object, description=request.data['description'], 
     location=request.data['location'], price_per_night=ppn, max_guests=mg, bathrooms=baths, bedrooms=beds, 
     backyard=options['backyard'], pool=options['pool'], wifi=options['wifi'], kitchen=options['kitchen'], 
     free_parking=options['free_parking'], pets_allowed=options['pets_allowed'])
+    try:
+        property.full_clean()
+    except ValidationError as e:
+        return Response({"error " + str(e)}, status=400)
     property.save()
     
     return Response(PropertySerializer(property).data, status=200)

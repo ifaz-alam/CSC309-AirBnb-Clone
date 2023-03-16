@@ -13,8 +13,7 @@ def deleteProperty(request):
     }
     """
 
-    if request.user != property.owner:
-        return Response({'error': 'You are not the owner, permission denied'}, status=403)
+    
     data = request.data
     required_fields = {"pk"}
     #TODO: check for required fields and missing fields here
@@ -27,6 +26,9 @@ def deleteProperty(request):
         property=Property.objects.get(pk=pk_int)
     except:
         return Response({'error': 'Property does not exist'}, status=404)
+    
+    if request.user != property.owner:
+        return Response({'error': 'You are not the owner, permission denied'}, status=403)
     
     property.delete()
     return Response({'success, property deleted'}, status=200)

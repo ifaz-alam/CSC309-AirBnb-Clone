@@ -15,7 +15,7 @@ class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         
-        fields = ['pk', 'name', 'owner', 'images', 'description', 'rating', 'location', 
+        fields = ['pk', 'address', 'name', 'owner', 'images', 'description', 'rating', 'location', 
                   'price_per_night', 'max_guests', 'current_status', 'current_renter', 
                   'banned', 'comments', 'bathrooms', 'bedrooms', 'backyard', 'pool', 'wifi', 
                   'kitchen', 'free_parking', 'pets_allowed']

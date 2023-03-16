@@ -2,6 +2,8 @@ from rest_framework.response import Response
 from properties.models.property import Property
 from properties.serializers.property_serializer import PropertySerializer
 from accounts.models import Account
+from images.models import Image
+from django.core.exceptions import ValidationError
 
 def updateProperty(request):
     """
@@ -9,6 +11,7 @@ def updateProperty(request):
     required fields: property primary key
     
     optional fields: 
+    address: str
     name: str
     owner: User -> pk int of that user
     images: Image -> pk int of that image
@@ -36,7 +39,7 @@ def updateProperty(request):
         "price_per_night": "400"
     }
     """
-
+    #TODO: add support for objects from foreign keys, shouldnt be adding just the pk int, should be the object
     try:
         primary_key = request.data.get('pk')
     except:
@@ -56,14 +59,20 @@ def updateProperty(request):
     #check that the user is the owner of the property
     if request.user != property.owner:
         return Response({'error': 'You are not the owner, permission denied'}, status=403)
-
+    #check that rating is an int
+    rating = request.data.get('rating')
+    try:
+        rating_int = int(rating)
+    except:
+        return Response({"error" : "expected rating to be an int, got something else"}, status=400)
+    address = request.data.get('address')
     name = request.data.get('name')
     #add validation to ensure account exists
     owner = Account.objects.get(pk=request.data.get('owner'))
     images = request.data.get('images')
     description = request.data.get('description')
     #int
-    rating = request.data.get('rating')
+    
     location = request.data.get('location')
     price_per_night = request.data.get('price_per_night')
     max_guests = request.data.get('max_guests')
@@ -73,18 +82,19 @@ def updateProperty(request):
     banned = request.data.get('owner')
     bathrooms = request.data.get('bathrooms')
     bedrooms = request.data.get('bedrooms')
-
+    if address:
+        property.address = address
     if name:
         property.name = name
     if owner:
-        property.owner = owner
+        property.owner = Account.objects.get(pk=owner)
     if images:
-        property.images = images
+        property.images = Image.objects.get(pk=images)
     if description:
         property.description = description
     #int validation should already be done in the model
     if rating:
-        property.rating = rating
+        property.rating = rating_int
     if location:
         property.location = location
     if price_per_night:
@@ -95,7 +105,7 @@ def updateProperty(request):
         property.current_status = current_status
     if current_renter:
         property.current_renter = current_renter
-    #banned not adding for some reason
+    # make sure its adding the actual objerct.
     if banned:
         property.banned.add(banned)
     if bathrooms:
@@ -121,13 +131,10 @@ def updateProperty(request):
     if request.data.get('pets_allowed'):
         property.pets_allowed = request.data.get('pets_allowed')
     
-    #doing it this way was giving a null error Not null constraint failed.
-    """
-    property.pool = request.data.get('pool')
-    property.wifi = request.data.get('wifi')
-    property.kitchen = request.data.get('kitchen')
-    property.free_parking = request.data.get('free_parking')
-    property.pets_allowed = request.data.get('pets_allowed')
-    """
+    try:
+        property.full_clean()
+    except ValidationError as e:
+        return Response({"error " + str(e)}, status=400)
+    
     property.save()
     return Response(PropertySerializer(property).data, status=200)
