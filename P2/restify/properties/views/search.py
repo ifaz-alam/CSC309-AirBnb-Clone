@@ -60,7 +60,7 @@ class SearchView(viewsets.ModelViewSet):
         if sort_direction:
             if sort_direction == 'ascending':
                 pass
-            if sort_direction == 'descending':
+            elif sort_direction == 'descending':
                 pass
             else:
                 return Response({'error': 'sort_direction should be ascending or descending, got something else'}, status=400)
