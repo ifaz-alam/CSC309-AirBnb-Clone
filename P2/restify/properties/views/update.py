@@ -35,6 +35,7 @@ def updateProperty(request):
     Example Put data:
     {
         "pk" : "1",
+        "owner": "1",
         "description" : "this is the nicest place to stay in canada",
         "price_per_night": "400"
     }
