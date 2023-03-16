@@ -14,12 +14,28 @@ class Notification(models.Model):
         (0, 'Unseen'),
         (1, 'Seen'),
     ]
+    """
+     Notification_type must be one of the following values:
+        - "reservation_request"
+        - "cancellation_request"
+        - "reservation_approved"
+        - "cancellation_approved"
+        - "property_comment"
+        - "approval_request"
+        - "cancellation_request"
+    """
+
+    """
+    As a host, I want to see notifications. I want to be notified when someone rates my property, posts a comment about my property, requests approval for making a reservation or cancellation.
+    As a user, I want to see notifications. I want to be notified when my reservation is approved or canceled, or when the date of my approved reservations are about to come up.
+    """
     NOTIFICATION_TYPE_CHOICES = [
-        ('new_reservation', 'New Reservation'),
-        ('cancellation_request', 'Cancellation Request'),
-        ('approved_reservation', 'Approved Reservation'),
-        ('cancellation_approved', 'Cancellation Approved'),
-        ('test_notification', 'Test notification from Phase 2 of Restify!')
+        ('reservation_request', 'You have a Reservation Request'),
+        ('cancellation_request', 'You have a Cancellation Request'),
+        ('reservation_approved', 'Your Reservation Request was Approved'),
+        ('cancellation_approved', 'Your Cancellation Request Approved'),
+        ('property_comment', 'Someone left a comment on your property!'),
+        ('test_notification', 'Test notification from Phase 2 of Restify!'),
     ]
     # link the notification to the associated account
     recipient = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='notifications')
@@ -40,7 +56,7 @@ class Notification(models.Model):
 
 class NotificationSerializer(serializers.ModelSerializer):
     recipient = AccountSerializer()
-
+    notification_type = serializers.ChoiceField(choices=Notification.NOTIFICATION_TYPE_CHOICES, label='Get_notification_type_display')
     class Meta:
         model = Notification
         fields = ['pk', 'notification_type', 'seen', 'link', 'recipient']

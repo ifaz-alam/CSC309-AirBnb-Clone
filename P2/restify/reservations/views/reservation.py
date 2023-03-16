@@ -20,6 +20,8 @@ class ReservationViews(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+
+    # 
     """
     Recall the Reservation Model:
         - state (Pending on initialization)
@@ -47,7 +49,23 @@ class ReservationViews(viewsets.ModelViewSet):
     property_id
     start_date
     end_state
+
+
+    States
+    PENDING = 'PENDING'
+    DENIED = 'DENIED'
+    APPROVED = 'APPROVED'
+    CANCELED = 'CANCELED'
+    TERMINATED = 'TERMINATED'
+    COMPLETED = 'COMPLETED'
     """
+
+    # authentication stuff
+    # cant make a reservation at an already existing place
+    #  filter by states
+    # right user does right stuff
+
+
     def post(self, request):
         # validation for required fields
         guest_username = request.data.get('guest')
@@ -55,12 +73,15 @@ class ReservationViews(viewsets.ModelViewSet):
             return Response({'error': 'guest field is required.'}, status=400)
         else:
             # check if guest is a valid username
-
             #  filter out the accounts to search for user with given username
             guest = Account.objects.filter(username=guest_username).first()
             if not guest:
                 return Response({'error': 'Invalid guest username'}, status=404)
 
+            # guest validation
+            
+            if request.user != guest:
+                return Response({'error': 'You must be authenticated as the guest account.'}, status=403)
 
         
         property_id = request.data.get('property_id')
@@ -80,7 +101,7 @@ class ReservationViews(viewsets.ModelViewSet):
         # check if reservation already exists for this guest and property
         existing_reservation = Reservation.objects.filter(guest=guest, property=property).first()
         if existing_reservation:
-            return Response({'error': 'Reservation already exists for this guest and property'}, status=400)
+            return Response({'error': 'Reservation by this guest already exists for this property'}, status=400)
 
         start = request.data.get('start_date')
 
@@ -121,17 +142,18 @@ class ReservationViews(viewsets.ModelViewSet):
         reservation_id: Num
         all: Bool
         username: account username
-        filter_type: guest or host
+        user_type: guest or host
 
         * if all is true, ignores reservation_id.
-        user may input username and filter_type to narrow down the search
+        user may input username and user_type to narrow down the search.
+        In addition the user can also filter by state
         
         Example request:
         {
             "reservation_id": "5",
             "all": "true",
             "username": "Ifaz",
-            "filter_type": "guest" 
+            "user_type": "guest" 
         }
 
         if reservation_id is not given then 
@@ -141,50 +163,59 @@ class ReservationViews(viewsets.ModelViewSet):
         all_field = request.data.get('all')
 
         username = request.data.get('username')
-        filter_type = request.data.get('filter_type')
+        user_type = request.data.get('user_type')
+        state = request.data.get('state')
 
-  
         if all_field is not None and not isinstance(all_field, bool):
             return Response({'error': 'all field all must be either true or false'}, status=400)
         
-        
+        # Filter by state if given
+        reservations = Reservation.objects.all()
+        states =  [choice[0] for choice in Reservation.State.choices]
+        if state is not None:
+            if state not in states:
+                return Response({'error': f'{state} is not a valid state. must be one of {states}'}, status=400)
+
         if all_field is True:
             if username is None:
                 # all other fields are ignored
-                page = self.paginate_queryset(Reservation.objects.all())
+                page = self.paginate_queryset(reservations)
                 if page is not None:
                     return Response(ReservationSerializer(page, many=True).data, status=200)
-                else:  
-                    return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
-            else:                    
-                if filter_type == 'guest':
-                    page = self.paginate_queryset(Reservation.objects.filter(guest__username=username))
-                    if page is not None:
-                        return Response(ReservationSerializer(page, many=True).data, status=200)
-                    else:  
-                        return Response(ReservationSerializer(Reservation.objects.filter(guest__username=username), many=True).data, status=200)
-                # If filter_type is host, filter by host username
-                elif filter_type == 'host':
-                    page = self.paginate_queryset(Reservation.objects.filter(host__username=username))
-                    if page is not None:
-                        return Response(ReservationSerializer(page, many=True).data, status=200)
-                    else:  
-                        return Response(ReservationSerializer(Reservation.objects.filter(host__username=username), many=True).data, status=200)
-                # If filter_type is not given, return all reservations
                 else:
-                    page = self.paginate_queryset(Reservation.objects.filter(Q(guest__username=username) | Q(host__username=username)))
+                    return Response(ReservationSerializer(reservations, many=True).data, status=200)
+            else:
+                if user_type == 'guest':
+                    page = self.paginate_queryset(reservations.filter(guest__username=username))
                     if page is not None:
                         return Response(ReservationSerializer(page, many=True).data, status=200)
-                    else:  
-                        return Response(ReservationSerializer(Reservation.objects.all(), many=True).data, status=200)
+                    else:
+                        return Response(ReservationSerializer(reservations.filter(guest__username=username), many=True).data, status=200)
+
+                # If user_type is host, filter by host username
+                elif user_type == 'host':
+                    page = self.paginate_queryset(reservations.filter(host__username=username))
+                    if page is not None:
+                        return Response(ReservationSerializer(page, many=True).data, status=200)
+                    else:
+                        return Response(ReservationSerializer(reservations.filter(host__username=username), many=True).data, status=200)
+                # If user_type is not given, return all reservations
+                else:
+                    page = self.paginate_queryset(reservations.filter(Q(guest__username=username) | Q(host__username=username)))
+                    if page is not None:
+                        return Response(ReservationSerializer(page, many=True).data, status=200)
+                    else:
+                        return Response(ReservationSerializer(reservations, many=True).data, status=200)
 
         # search by reservation id
         if reservation_id is None:
-            return Response({'error': 'All was not true, so reservation_id is required'}, status=400)
+            return Response({'error': 'All was false, so reservation_id is required'}, status=400)
         else:
             reservation = Reservation.objects.filter(id=reservation_id).first()
             if reservation is None:
                 return Response({'error': 'Reservation with given id does not exist'}, status=400)
+            
+            # check if current user 
             return Response(ReservationSerializer(reservation).data, status=200)
         
     def put(self, request):
@@ -206,6 +237,30 @@ class ReservationViews(viewsets.ModelViewSet):
             "paid" : true
         }
         """
+        # PENDING = 'PENDING'
+        # DENIED = 'DENIED'
+        # APPROVED = 'APPROVED'
+        # CANCELED = 'CANCELED'
+        # TERMINATED = 'TERMINATED'
+        # COMPLETED = 'COMPLETED'
+        
+        
+        """
+        User permissions:
+        User is allowed to set status to 
+            'CANCELLED'
+            'COMPLETED'
+        
+
+        Host is allowed to set status to:
+            DENIED iff currently PENDING
+            TERMINATED iff currently approved
+
+        """ 
+        if not request.user.is_authenticated:
+            return Response({'error': 'You must be authenticated'}, status=400)
+
+
         reservation_id = request.data.get('reservation_id')
 
         if reservation_id is None:
@@ -216,6 +271,7 @@ class ReservationViews(viewsets.ModelViewSet):
         if reservation is None:
             return Response({'error': 'Reservation with given id does not exist'}, status=400)
         
+        
         # Validate state field
         valid_states = [state[0].lower() for state in Reservation.State.choices]
         state = request.data.get('state')
@@ -223,6 +279,9 @@ class ReservationViews(viewsets.ModelViewSet):
             if state.lower() not in valid_states:
                 return Response({'error': 'Invalid state given. must be one of pending, approved, denied, or terminated'}, status=400)
             else:
+                # error
+                if state.lower() in valid_states and request.user.username == reservation.guest.username and state.lower() == 'approved':
+                    return Response({'error': 'You do not have permission to approve your own request.'}, status=400)
                 reservation.state = state.upper()
 
         # Validate paid field
@@ -230,6 +289,8 @@ class ReservationViews(viewsets.ModelViewSet):
 
         if paid is not None:
             if paid is True or paid is False:
+                if request.user == reservation.guest:
+                    return Response({'error': 'You cannot edit the paid status of your own reservation.'}, status=400)
                 reservation.paid = paid
             else:
                 return Response({'error': 'the value for paid given is not a valid format. it must either be true or false'}, status=400)

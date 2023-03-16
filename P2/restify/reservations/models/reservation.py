@@ -14,9 +14,16 @@ from rest_framework import serializers
 class Reservation(models.Model):
     class State(models.TextChoices):
         PENDING = 'PENDING'
-        APPROVED = 'APPROVED'
         DENIED = 'DENIED'
+        APPROVED = 'APPROVED'
+        CANCELED = 'CANCELED'
         TERMINATED = 'TERMINATED'
+        COMPLETED = 'COMPLETED'
+
+
+
+
+
 
     state = models.CharField(choices=State.choices, default=State.PENDING, max_length=200)
     paid = models.BooleanField(default=False)
