@@ -27,9 +27,7 @@ class Reservation(models.Model):
 
     state = models.CharField(choices=State.choices, default=State.PENDING, max_length=200)
     paid = models.BooleanField(default=False)
-    # month-day-year default today
     start_date = models.DateField()
-    # month-day-year default tomorrow
     end_date = models.DateField()
     guest = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='guest_reservations')
     host = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='host_reservations')

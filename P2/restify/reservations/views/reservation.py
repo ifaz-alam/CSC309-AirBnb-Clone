@@ -144,14 +144,14 @@ class ReservationViews(viewsets.ModelViewSet):
         username: account username
         user_type: guest or host
 
-        * if all is true, ignores reservation_id.
+        If all is true, ignores reservation_id.
         user may input username and user_type to narrow down the search.
         In addition the user can also filter by state
         
         Example request:
         {
             "reservation_id": "5",
-            "all": "true",
+            "all": true,
             "username": "Ifaz",
             "user_type": "guest" 
         }
@@ -165,6 +165,8 @@ class ReservationViews(viewsets.ModelViewSet):
         username = request.data.get('username')
         user_type = request.data.get('user_type')
         state = request.data.get('state')
+        if state:
+            state = state.upper()
 
         if all_field is not None and not isinstance(all_field, bool):
             return Response({'error': 'all field all must be either true or false'}, status=400)
@@ -175,6 +177,8 @@ class ReservationViews(viewsets.ModelViewSet):
         if state is not None:
             if state not in states:
                 return Response({'error': f'{state} is not a valid state. must be one of {states}'}, status=400)
+            else:
+                reservations = reservations.filter(state=state)
 
         if all_field is True:
             if username is None:
@@ -185,6 +189,9 @@ class ReservationViews(viewsets.ModelViewSet):
                 else:
                     return Response(ReservationSerializer(reservations, many=True).data, status=200)
             else:
+                if request.user.username != username:
+                    return Response({'error': 'You must be authenticated to see the reservations belonging to this user'}, status=400)
+
                 if user_type == 'guest':
                     page = self.paginate_queryset(reservations.filter(guest__username=username))
                     if page is not None:
@@ -215,7 +222,10 @@ class ReservationViews(viewsets.ModelViewSet):
             if reservation is None:
                 return Response({'error': 'Reservation with given id does not exist'}, status=400)
             
-            # check if current user 
+            # check if current user is allowed to access this reservation_id
+            if not (reservation.guest == request.user or reservation.host == request.user):
+                return Response({'error': 'Reservation with this id exists but you do not have permission to view it. You must be authenticated as the guest for this reservation.'}, status=400)
+
             return Response(ReservationSerializer(reservation).data, status=200)
         
     def put(self, request):
