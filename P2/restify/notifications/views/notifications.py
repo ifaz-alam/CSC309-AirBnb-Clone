@@ -111,7 +111,7 @@ class NotificationViews(viewsets.ModelViewSet):
             "all": true,
         }
 
-        Get all notifications in the system
+        Get one notification from the system if it exists
         {
             "notification_id": 1
         }
