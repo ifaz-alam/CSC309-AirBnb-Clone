@@ -116,9 +116,6 @@ class NotificationViews(viewsets.ModelViewSet):
             "notification_id": 1
         }
 
-        all -> whether to give all notifications in the system
-        if username is given ignore all
-
         """
         username = request.data.get('username')
         all_field = request.data.get('all')
@@ -166,10 +163,7 @@ class NotificationViews(viewsets.ModelViewSet):
         """
         Edit the notification with the given notification_id
 
-        Mandatory field: notification_id
-
-        Optional fields: 
-        - seen
+        Mandatory field: notification_id, seen
 
         Payload format (JSON) PUT:
         {
