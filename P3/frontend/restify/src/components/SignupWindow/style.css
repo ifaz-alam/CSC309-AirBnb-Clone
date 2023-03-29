@@ -1,0 +1,16 @@
+.primary-bold-color {
+	font-weight: bold;
+	color: #f66867;
+}
+.primary-bold-color {
+	font-weight: bold;
+	color: #f66867;
+}
+
+.button-color {
+	background-color: #3d93dd;
+}
+
+.button-color:hover {
+	background-color: #5bc5ea;
+}
