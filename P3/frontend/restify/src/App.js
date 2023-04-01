@@ -1,21 +1,22 @@
-import logo from "./logo.svg";
-import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { APIContext, useAPIContext } from "./contexts/APIContext";
 import SignupWindow from "./components/SignupWindow";
+import HomeTesting from "./components/HomeTesting";
+import { useState } from "react";
+import { UserContext, useUserConext } from "./contexts/UserContext";
 
 function App() {
 	return (
-		<>
-			<link
-				href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-				rel="stylesheet"
-				integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-				crossorigin="anonymous"
-			/>
-			<APIContext.Provider value={useAPIContext()}>
-				<SignupWindow />
-			</APIContext.Provider>
-		</>
+		<BrowserRouter>
+			<UserContext.Provider value={useUserConext()}>
+				<Routes>
+					<Route path="/">
+						<Route index element={<HomeTesting />} />
+						<Route path="signup" element={<SignupWindow />} />
+					</Route>
+				</Routes>
+			</UserContext.Provider>
+		</BrowserRouter>
 	);
 }
 

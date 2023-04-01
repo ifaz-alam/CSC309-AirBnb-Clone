@@ -48,6 +48,12 @@ const validatePasswordConfirm = (passwordConfirm, password) => {
 	}
 };
 
+// Check if the given phone number is of the form xxx-xxx-xxxx
+const validatePhone = (phone) => {
+	const re = /^\d{3}-\d{3}-\d{4}$/;
+	return re.test(String(phone));
+};
+
 module.exports = {
 	validateUsername,
 	validateEmail,
@@ -55,4 +61,5 @@ module.exports = {
 	validateLast,
 	validatePassword,
 	validatePasswordConfirm,
+	validatePhone,
 };
