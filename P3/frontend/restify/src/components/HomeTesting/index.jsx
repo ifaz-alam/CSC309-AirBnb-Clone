@@ -9,6 +9,8 @@ const HomeTesting = () => {
 			<h1>Testing Window</h1>
 			<p>Current user: {user.username}</p>
 			<p>Current token: {user.Authorization}</p>
+			<p>Local Storage, pk: {localStorage.getItem("pk")}</p>
+			<p>Local Storage, auth: {localStorage.getItem("Authorization")}</p>
 		</>
 	);
 };

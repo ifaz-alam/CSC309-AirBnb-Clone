@@ -1,1 +1,8 @@
 P2/restify/*/migrations/
+P3/backend/restify/*/migrations/
+
+# Ignore all pychache folders
+__pycache__/
+
+*.sqlite3
+*.pyc

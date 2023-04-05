@@ -84,6 +84,14 @@ const SignupWindow = () => {
 
 				setUser({ ...data, Authorization: data2.access });
 				console.log(user);
+				if (response2.ok) {
+					localStorage.setItem(
+						"Authorization",
+						`Bearer ${data2.access}`
+					);
+					localStorage.setItem("username", data.username);
+					localStorage.setItem("pk", data.pk);
+				}
 
 				navigate("/");
 			} catch (error) {
@@ -169,15 +177,6 @@ const SignupWindow = () => {
 
 	return (
 		<>
-			{/* <h1>Username: {newUser.username}</h1>
-			<h1>Email: {newUser.email}</h1>
-			<h1>First: {newUser.first}</h1>
-			<h1>Last: {newUser.last}</h1>
-			<h1>Password: {newUser.password}</h1>
-			<h1>Password Confirm: {newUser.passwordConfirm}</h1>
-			<h1>Email valid {valid.email ? "true" : "false"}</h1>
-			<h1>username valid {valid.username ? "true" : "false"}</h1> */}
-
 			<div className="container d-flex flex-column justify-content-center h-100">
 				<div className="row d-flex justify-content-center">
 					<div className="card w-75 mb-3 mt-3 primary-card-color">
@@ -213,13 +212,21 @@ const SignupWindow = () => {
 											updateEmail(e.target.value)
 										}
 									/>
-									<div className="valid-feedback">
-										Looks good!
-									</div>
-									<div className="invalid-feedback">
-										Please enter a valid email.
-									</div>
 								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.email === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
+								</div>
+
 								<div className="col-md-10 offset-md-1 mb-3">
 									<label
 										for="phone"
@@ -238,12 +245,19 @@ const SignupWindow = () => {
 											updatePhone(e.target.value)
 										}
 									/>
-									<div className="valid-feedback">
-										Looks good!
-									</div>
-									<div className="invalid-feedback">
-										Please enter a valid email.
-									</div>
+								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.phone === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
 								</div>
 								<div className="col-md-10 offset-md-1 mb-3">
 									<label
@@ -263,12 +277,19 @@ const SignupWindow = () => {
 											updateUsername(e.target.value)
 										}
 									/>
-									<div className="valid-feedback">
-										Looks good!
-									</div>
-									<div className="invalid-feedback">
-										Please enter a username.
-									</div>
+								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.username === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
 								</div>
 								<div className="col-md-10 offset-md-1 mb-3">
 									<label
@@ -288,12 +309,19 @@ const SignupWindow = () => {
 											updateFirst(e.target.value)
 										}
 									/>
-									<div className="valid-feedback">
-										Looks good!
-									</div>
-									<div className="invalid-feedback">
-										Please enter a first name.
-									</div>
+								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.first === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
 								</div>
 								<div className="col-md-10 offset-md-1 mb-3">
 									<label
@@ -313,12 +341,19 @@ const SignupWindow = () => {
 											updateLast(e.target.value)
 										}
 									/>
-									<div className="valid-feedback">
-										Looks good!
-									</div>
-									<div className="invalid-feedback">
-										Please enter a last name.
-									</div>
+								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.last === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
 								</div>
 								<div className="col-md-10 offset-md-1 mb-3">
 									<label
@@ -339,15 +374,19 @@ const SignupWindow = () => {
 											updatePassword(e.target.value)
 										}
 									/>
-									<div className="valid-feedback">
-										Looks good!
-									</div>
-									<div className="invalid-feedback">
-										Please enter a password. Password
-										requires atleast 8 characters, one
-										uppercase, one lowercase, one special
-										character and a number.
-									</div>
+								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.password === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
 								</div>
 								<div className="col-md-10 offset-md-1 mb-3">
 									<label
@@ -369,6 +408,19 @@ const SignupWindow = () => {
 											)
 										}
 									/>
+								</div>
+								<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+									{valid.passwordConfirm === true ? (
+										<div className="good-feedback">
+											{" "}
+											Looks Good{" "}
+										</div>
+									) : (
+										<div className="bad-feedback">
+											{" "}
+											Please enter a valid email{" "}
+										</div>
+									)}
 								</div>
 								<div className="col-10 offset-1 mt-4">
 									<button

@@ -14,3 +14,11 @@
 .button-color:hover {
 	background-color: #5bc5ea;
 }
+
+.bad-feedback {
+	color: #f66867;
+}
+
+.good-feedback {
+	color: #3d93dd;
+}

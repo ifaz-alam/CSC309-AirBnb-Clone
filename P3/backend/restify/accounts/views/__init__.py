@@ -3,3 +3,4 @@ from .login import LoginView
 from .update import updateAccount
 from .account import AccountViews
 from .delete import deleteAccount
+from .account_get import AccountViewsGet

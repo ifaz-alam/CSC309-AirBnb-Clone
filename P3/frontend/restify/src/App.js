@@ -1,9 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { APIContext, useAPIContext } from "./contexts/APIContext";
 import SignupWindow from "./components/SignupWindow";
+import LoginWindow from "./components/LoginWindow";
 import HomeTesting from "./components/HomeTesting";
 import { useState } from "react";
 import { UserContext, useUserConext } from "./contexts/UserContext";
+import LoginPage from "./pages/login";
+import SignupPage from "./pages/signup";
 
 function App() {
 	return (
@@ -12,7 +15,10 @@ function App() {
 				<Routes>
 					<Route path="/">
 						<Route index element={<HomeTesting />} />
-						<Route path="signup" element={<SignupWindow />} />
+						<Route path="/accounts">
+							<Route path="signup" element={<SignupPage />} />
+							<Route path="login" element={<LoginPage />} />
+						</Route>
 					</Route>
 				</Routes>
 			</UserContext.Provider>
