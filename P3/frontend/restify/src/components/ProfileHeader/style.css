@@ -1,0 +1,5 @@
+/* Set the max width of the avatar class to 100x100 pixels */
+.avatar {
+	max-width: 200px;
+	max-height: 200px;
+}

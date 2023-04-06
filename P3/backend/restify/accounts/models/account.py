@@ -23,6 +23,7 @@ class Account(AbstractUser):
     biography = models.CharField(blank=True, null=True, max_length=500)
     guest_rating = models.IntegerField(blank=False, null=False, default=0)
     profile_picture = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, blank=True)
+    email= models.EmailField(blank=False, null=False, unique=True)
     
     comments = GenericRelation(Comment, related_query_name='account')
     

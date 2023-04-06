@@ -7,4 +7,4 @@ class AccountSerializerNoComments(serializers.ModelSerializer):
         
     class Meta:
         model = Account
-        fields = ['username', 'pk', 'first_name', 'last_name', 'phone_number', 'biography', 'guest_rating']
+        fields = ['username', 'pk', 'first_name', 'last_name', "email", 'phone_number', 'biography', 'guest_rating']

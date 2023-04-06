@@ -12,6 +12,6 @@ class AccountSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Account
-        fields = ['username', 'pk', 'first_name', 'last_name', 'phone_number', 'biography', 'profile_picture', 'guest_rating', 'comments', 'properties', 'notifications',
+        fields = ['username', 'pk', 'first_name', 'last_name', "email", 'phone_number', 'biography', 'profile_picture', 'guest_rating', 'comments', 'properties', 'notifications',
                   'guest_reservations', 'host_reservations']
         depth=1

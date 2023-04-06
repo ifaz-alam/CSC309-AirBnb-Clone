@@ -45,6 +45,18 @@ class CommentViews(viewsets.ModelViewSet):
         }
         """
         data = request.data
+        if (data.get('pk') == '' or data.get('pk') == None):
+            if (request.GET.get('pk') != None):
+                data['pk'] = request.GET.get('pk')
+        if (data.get('parent_pk') == '' or data.get('parent_pk') == None): 
+            if (request.GET.get('parent_pk') != None):
+                data['parent_pk'] = request.GET.get('parent_pk')
+        if (data.get('parent_type') == '' or data.get('parent_type') == None):
+            if (request.GET.get('parent_type') != None):
+                data['parent_type'] = request.GET.get('parent_type')
+                
+        print(data)
+                
         required = {"pk", "parent_pk", "parent_type"}
         non_empty = {"pk"}
         allowed_obj_types = {'Comment', 'Account', 'Property'}
@@ -100,6 +112,9 @@ class CommentViews(viewsets.ModelViewSet):
                 Parent = Property.objects.get(pk=data['parent_pk'])
             elif data['parent_type'] == 'Comment':
                 Parent = Comment.objects.get(pk=data['parent_pk'])
+                
+            if (request.GET.get('all') == 'true'):
+                return Response(CommentSerializer(Parent.comments.all(), many=True).data)
 
             page = self.paginate_queryset(Parent.comments.all())
             if page is not None:

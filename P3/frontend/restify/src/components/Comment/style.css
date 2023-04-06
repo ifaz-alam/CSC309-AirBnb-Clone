@@ -1,0 +1,18 @@
+.comment {
+	background-color: #edeae0;
+}
+
+.profile-pic {
+	width: 100%;
+	border-radius: 50%;
+}
+
+.checked {
+	color: orange;
+}
+
+@media (max-width: 991.98px) {
+	.profile-pic {
+		max-width: 80px;
+	}
+}
