@@ -23,6 +23,7 @@ const ProfilePage = () => {
 	// 	phone: "123-456-7890",
 	// 	email: "austin@gmail.com",
 	// };
+	let APIURL = "http://localhost:8000";
 
 	useEffect(() => {
 		// fetch user profile
@@ -58,6 +59,32 @@ const ProfilePage = () => {
 		fetchProfile();
 	}, []);
 
+	const updateRating = (newRating) => {
+		setProfileAccount({
+			...profileAccount,
+			guest_rating: newRating,
+		});
+		console.log(profileAccount);
+
+		fetch(`${APIURL}/accounts/user/`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `${localStorage.getItem("Authorization")}`,
+			},
+			body: JSON.stringify({
+				...profileAccount,
+				password_1: "",
+				password_2: "",
+			}),
+		})
+			.then((response) => response.json())
+
+			.then((result) => {
+				console.log("Success:", result);
+			});
+	};
+
 	return (
 		<>
 			{Object.keys(profileAccount).length > 0 ? (
@@ -66,7 +93,10 @@ const ProfilePage = () => {
 				) : (
 					<>
 						<div className="mt-3">
-							<ProfileHeader profileAccount={profileAccount} />
+							<ProfileHeader
+								profileAccount={profileAccount}
+								setProfileAccount={setProfileAccount}
+							/>
 						</div>
 						<div className="mt-3">
 							<ProfileProperties
@@ -92,6 +122,7 @@ const ProfilePage = () => {
 							<ProfileCommentSection
 								ParentType="Property"
 								ParentID="1"
+								updateRating={updateRating}
 							/>
 						</div>
 					</>

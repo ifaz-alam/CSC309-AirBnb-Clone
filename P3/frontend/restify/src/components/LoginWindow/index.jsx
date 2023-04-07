@@ -22,6 +22,8 @@ const LoginWindow = () => {
 		password: false,
 	});
 
+	const [error, setError] = useState("");
+
 	const updateUsername = (value) => {
 		setNewUser({ ...newUser, username: value });
 		setValid({
@@ -79,6 +81,13 @@ const LoginWindow = () => {
 					body: JSON.stringify(formatted_body),
 				});
 
+				const data2 = await login_fetch.json();
+
+				if (login_fetch.status !== 200) {
+					setError(data2.detail);
+					throw new Error("Error");
+				}
+
 				const get_accounts = await fetch(
 					`${APIURL}/accounts/user/get/`,
 					{
@@ -104,7 +113,7 @@ const LoginWindow = () => {
 				}
 
 				console.log(account);
-				const data2 = await login_fetch.json();
+
 				console.log(data2);
 
 				setUser({ ...account, Authorization: data2.access });
@@ -174,7 +183,7 @@ const LoginWindow = () => {
 									) : (
 										<div className="bad-feedback">
 											{" "}
-											Please enter a valid email{" "}
+											Please enter a valid username{" "}
 										</div>
 									)}
 								</div>
@@ -207,10 +216,20 @@ const LoginWindow = () => {
 									) : (
 										<div className="bad-feedback">
 											{" "}
-											Please enter a valid email{" "}
+											Please enter a valid password{" "}
 										</div>
 									)}
 								</div>
+								{error === "" ? (
+									<></>
+								) : (
+									<div className="col-md-10 offset-md-1 mb-3 email-feedback d-flex justify-content-center">
+										<div className="bad-feedback">
+											{error}
+										</div>
+									</div>
+								)}
+
 								<div className="col-10 offset-1 mt-4">
 									<button
 										className="btn w-100 submit-button button-color"

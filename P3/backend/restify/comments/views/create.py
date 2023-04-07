@@ -61,10 +61,10 @@ def createComment(request):
         try:
             res = Reservation.objects.get(guest=request.user, property=comment_parent)
         except:
-            return Response({"erorr": "You do not have a reservation at this property"})
+            return Response({"error": "You do not have a reservation at this property"}, status=400)
 
         if not (res.state == 'COMPLETED' or res.state == 'TERMINATED'):
-            return Response({"erorr": "You do not have a completed or terminated reservation here"}) 
+            return Response({"error": "You do not have a completed or terminated reservation here"}) 
         
         if (comment_parent.comments.filter(author=request.user).exists()):
             return Response({"error": "You can only have one comment!"}, status=400)

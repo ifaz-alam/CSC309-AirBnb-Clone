@@ -87,7 +87,7 @@ def updateAccount(request):
         else:
             Account.set_password(data['password_1'])
     
-    if data['profile_picture'] != '':
+    if data['profile_picture'] != '' and data['profile_picture'] != None and type(data['profile_picture']) != dict:
         try:
             image = Image.objects.get(pk=int(data['profile_picture']))
             currentUser.profile_picture = image

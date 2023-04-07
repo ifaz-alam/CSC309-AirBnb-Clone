@@ -3,15 +3,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 
 const ProfileHeader = (props) => {
-	const { profileAccount } = props;
+	const { profileAccount, setProfileAccount } = props;
 
 	const [profilePicture, setProfilePicture] = useState();
 	const [actualPicture, setActualPicture] = useState();
-	console.log(profileAccount);
 	let APIURL = "http://localhost:8000";
 
 	const handleImageUpload = (e) => {
-		console.log(e);
 		e.preventDefault();
 		const data = new FormData();
 		data.append("image", actualPicture);
@@ -22,8 +20,6 @@ const ProfileHeader = (props) => {
 		})
 			.then((response) => response.json())
 			.then((result) => {
-				console.log("Success:", result);
-				console.log(result.image);
 				setProfilePicture(`${APIURL}${result.image}`);
 
 				fetch(`${APIURL}/accounts/user/`, {
@@ -44,7 +40,10 @@ const ProfileHeader = (props) => {
 					.then((response) => response.json())
 
 					.then((result) => {
-						console.log("Success:", result);
+						setProfileAccount({
+							...profileAccount,
+							result,
+						});
 					});
 			});
 	};

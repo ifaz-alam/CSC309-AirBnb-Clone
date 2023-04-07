@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const ProfileProperty = (props) => {
 	const { property, picture } = props;
-	console.log(picture);
 	let APIURL = "http://localhost:8000";
 
 	return (
