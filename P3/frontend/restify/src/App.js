@@ -9,6 +9,7 @@ import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
 import ProfilePage from "./pages/profile";
 import NavigationBar from "./components/NavigationBar";
+import Footer from "./components/Footer";
 
 function App() {
 	return (
@@ -33,6 +34,7 @@ function App() {
 						</Route>
 					</Route>
 				</Routes>
+				<Footer />
 			</UserContext.Provider>
 		</BrowserRouter>
 	);
