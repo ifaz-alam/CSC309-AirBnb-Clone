@@ -38,7 +38,7 @@ const NavigationBar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-lightblue">
       <div className="container-fluid">
-        <Link className="navbar-brand text-bold" to="/ifaz/navigationbar">
+        <Link className="navbar-brand text-bold" to="/">
           Restify
         </Link>
         <button

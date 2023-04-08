@@ -29,7 +29,7 @@ const HomeTesting = () => {
 									and thrilling adventures on Restify. From cozy cottages to luxury villas, treehouses to yachts, 
 									we have the perfect accommodation for every type of traveler. Join our community and book your next getaway today!</p>
 								
-								<a href="./results.html"><button type="button" className="btn btn-primary font-weight-bold">Get Started</button></a>
+								<a href="/accounts/signup"><button type="button" className="btn btn-primary font-weight-bold">Get Started</button></a>
 							</div>
 						<div className="col-md-6 px-md-5">
 							<img src="https://blog-www.pods.com/wp-content/uploads/2021/04/resized_FI_Getty_Airbnb-host-welcoming-guests.jpg" className="img-fluid rounded" />
