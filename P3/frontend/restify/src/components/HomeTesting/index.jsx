@@ -4,6 +4,47 @@ import { UserContext } from "../../contexts/UserContext";
 import "./style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { Carousel } from 'react-bootstrap';
+
+function ImageCarousel() {
+  return (
+    <Carousel>
+      <Carousel.Item>
+        <img
+          className="d-block w-100"
+          src="https://c4.wallpaperflare.com/wallpaper/1005/371/721/architecture-building-design-house-wallpaper-preview.jpg"
+          alt="Elon Musk's Private Resort"
+        />
+        <Carousel.Caption>
+          <h3>Elon Musk's Private Resort</h3>
+        </Carousel.Caption>
+      </Carousel.Item>
+      <Carousel.Item>
+        <img
+          className="d-block w-100"
+          src="https://wallpaper.dog/large/5491269.jpg"
+          alt="The Witch House"
+        />
+        <Carousel.Caption>
+          <h3>The Witch House</h3>
+        </Carousel.Caption>
+      </Carousel.Item>
+      <Carousel.Item>
+        <img
+          className="d-block w-100"
+          src="https://wallpapercave.com/wp/wp4031430.jpg"
+          alt="Steve's Kingdom"
+        />
+        <Carousel.Caption>
+          <h3>Steve's Kingdom</h3>
+        </Carousel.Caption>
+      </Carousel.Item>
+    </Carousel>
+  );
+}
+
+
+
 const HomeTesting = () => {
 	const { user, setUser } = useContext(UserContext); // Global authenticated user state
 	return (
@@ -59,41 +100,7 @@ const HomeTesting = () => {
 							<p className="text-secondary text-white text-center">Here are some of the things we have to offer!</p>
 						</div>
 						<div className="col-md-6" style={{padding:"1.5rem"}}>
-							<div id="carouselExampleIndicators" className="carousel slide">
-								<div className="carousel-indicators">
-									<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-									<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-									<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-								</div>
-								<div className="carousel-inner">
-									<div className="carousel-item active">
-										<img src="https://c4.wallpaperflare.com/wallpaper/1005/371/721/architecture-building-design-house-wallpaper-preview.jpg" className="d-block w-100" alt="..." />
-										<div className="carousel-caption d-none d-md-block">
-											<h3>Elon Musk's Private Resort</h3>
-										</div>
-									</div>
-								<div className="carousel-item">
-									<img src="https://wallpaper.dog/large/5491269.jpg" className="d-block w-100" alt="..." />
-									<div className="carousel-caption d-none d-md-block">
-										<h3>The Witch House</h3>
-									</div>
-									</div>
-									<div className="carousel-item">
-										<img src="https://wallpapercave.com/wp/wp4031430.jpg" className="d-block w-100" alt="..." />
-										<div className="carousel-caption d-none d-md-block">
-											<h3>Steve's Kingdom</h3>
-										</div>
-									</div>
-								</div>
-								<button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-									<span className="carousel-control-prev-icon" aria-hidden="true"></span>
-									<span className="visually-hidden">Previous</span>
-								</button>
-								<button className="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-								<span className="carousel-control-next-icon" aria-hidden="true"></span>
-								<span className="visually-hidden">Next</span>
-								</button>
-							</div>
+							<ImageCarousel />
 						</div>
 						
 					</div>
