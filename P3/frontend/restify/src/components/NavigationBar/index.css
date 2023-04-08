@@ -1,0 +1,19 @@
+.navbar {
+  border-radius: 10px;
+}
+.navbar-brand {
+  color: #f66867
+}
+
+.navbar-brand:hover {
+  color: #f66867 !important;
+  font-weight: bold;
+}
+
+.navbar-brand:visited {
+  color: #f66867;
+}
+
+
+
+
