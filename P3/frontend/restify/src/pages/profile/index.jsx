@@ -12,6 +12,7 @@ import ProfileCommentSection from "../../components/ProfileCommentSection";
 const ProfilePage = () => {
 	const { profileUser } = useParams();
 	const [profileAccount, setProfileAccount] = useState({});
+	const permission = localStorage.getItem("username") === profileUser;
 
 	// const testing = {
 	// 	username: "Xenon",
@@ -96,6 +97,7 @@ const ProfilePage = () => {
 							<ProfileHeader
 								profileAccount={profileAccount}
 								setProfileAccount={setProfileAccount}
+								permission={permission}
 							/>
 						</div>
 						<div className="mt-3">
@@ -103,21 +105,35 @@ const ProfilePage = () => {
 								properties={profileAccount.properties}
 							/>
 						</div>
-						<div className="mt-3">
-							<ProfilePending
-								properties={profileAccount.properties}
-							/>
-						</div>
-						<div className="mt-3">
-							<ProfileAccepted
-								properties={profileAccount.properties}
-							/>
-						</div>
-						<div className="mt-3">
-							<ProfilePast
-								properties={profileAccount.properties}
-							/>
-						</div>
+						<>
+							{permission ? (
+								<>
+									<div className="mt-3">
+										<ProfilePending
+											properties={
+												profileAccount.properties
+											}
+										/>
+									</div>
+									<div className="mt-3">
+										<ProfileAccepted
+											properties={
+												profileAccount.properties
+											}
+										/>
+									</div>
+									<div className="mt-3">
+										<ProfilePast
+											properties={
+												profileAccount.properties
+											}
+										/>
+									</div>
+								</>
+							) : (
+								<></>
+							)}
+						</>
 						<div className="mt-3">
 							<ProfileCommentSection
 								ParentType="Property"

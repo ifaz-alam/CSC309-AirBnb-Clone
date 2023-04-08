@@ -7,11 +7,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 
 const Comment = (props) => {
-	const { author, author_username, comment, parent, pk, rating, replies } =
-		props;
+	const {
+		author,
+		author_username,
+		comment,
+		parent,
+		pk,
+		rating,
+		replies,
+		deleteComment,
+	} = props;
+
+	const [commentReplies, setCommentReplies] = useState(replies);
+
+	const [replyToggle, setReplyToggle] = useState(false);
+	const [reply, setReply] = useState("");
+	const [replyErrorText, setReplyErrorText] = useState("");
 
 	const [authorAccount, setAuthorAccount] = useState();
 	let APIURL = "http://localhost:8000";
+
+	const permission = author_username === localStorage.getItem("username");
 
 	useEffect(() => {
 		fetch(`http://localhost:8000/accounts/user/?pk=${author}&all=false/`)
@@ -22,6 +38,10 @@ const Comment = (props) => {
 	}, []);
 
 	const getStars = (rating) => {
+		if (parent?.comment !== undefined) {
+			return <> </>;
+		}
+
 		if (rating === 0) {
 			return (
 				<>
@@ -85,6 +105,37 @@ const Comment = (props) => {
 		}
 	};
 
+	const replyToComment = async () => {
+		console.log("reply to comment");
+		console.log(reply);
+
+		let APIURL = "http://localhost:8000";
+		let request = await fetch(`${APIURL}/comments/`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `${localStorage.getItem("Authorization")}`,
+			},
+			body: JSON.stringify({
+				comment: reply,
+				rating: 0,
+				content_obj_pk: pk,
+				content_obj_type: "Comment",
+			}),
+		});
+
+		let response = await request.json();
+		if (request.status !== 200) {
+			setReplyErrorText("You cannot reply to this comment.");
+		} else {
+			setReplyErrorText("");
+			setReplyToggle(false);
+			setReply("");
+			console.log(commentReplies);
+			setCommentReplies([...commentReplies, response]);
+		}
+	};
+
 	return (
 		<>
 			<div className="card comment container mb-3">
@@ -100,15 +151,93 @@ const Comment = (props) => {
 							alt="profile-pic"
 						/>
 					</div>
-					<div className="col d-flex justify-content-center justify-content-lg-start align-items-center">
-						<h6 className="card-title d-inline me-3">
-							{author_username}
-						</h6>
-						<div className="">{getStars(rating)}</div>
+					<div className="col d-flex justify-content-between align-items-center">
+						<div>
+							<h6 className="card-title d-inline me-3">
+								{author_username}
+							</h6>
+							<div className="">{getStars(rating)}</div>
+						</div>
+
+						<div className="buttons d-flex justify-content-evenly">
+							<div className="delete-button mx-1">
+								{permission ? (
+									<>
+										<button
+											className="btn btn-sm btn-outline-danger"
+											onClick={() => deleteComment(pk)}
+										>
+											Delete
+										</button>
+									</>
+								) : (
+									<></>
+								)}
+							</div>
+							<div className="reply-button">
+								<button
+									className="btn btn-sm btn-outline-primary"
+									onClick={() => setReplyToggle(true)}
+								>
+									Reply
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div className="card-body">
 					<p>{comment}</p>
+				</div>
+				<div>
+					{replyToggle ? (
+						<>
+							<div className="d-flex flex-column">
+								<input
+									type="text"
+									name="reply"
+									id="reply"
+									value={reply}
+									className="form-control"
+									onChange={(e) => setReply(e.target.value)}
+								/>
+								{replyErrorText ? (
+									<p className="text-danger">
+										{replyErrorText}
+									</p>
+								) : (
+									<></>
+								)}
+								<button
+									className="btn btn-primary my-2"
+									onClick={() => replyToComment()}
+								>
+									{" "}
+									Submit
+								</button>
+								<button
+									className="btn btn-danger my-2"
+									onClick={() => {
+										setReplyToggle(false);
+										setReplyErrorText("");
+									}}
+								>
+									{" "}
+									Cancel
+								</button>
+							</div>
+						</>
+					) : (
+						<></>
+					)}
+				</div>
+				<div>
+					{commentReplies?.map((reply) => (
+						<Comment
+							key={reply.pk}
+							{...reply}
+							deleteComment={deleteComment}
+						/>
+					))}
 				</div>
 			</div>
 		</>
