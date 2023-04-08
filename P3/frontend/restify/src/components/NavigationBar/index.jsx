@@ -1,12 +1,40 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { BsBell } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import "./index.css";
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Navbar } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const NavigationBar = () => {
+  // Initialize state to track whether the dropdown is shown or not
+  const [showDropdown, setShowDropdown] = useState(false);
+  // Create a ref for the dropdown element to be able to detect clicks outside it
+  const dropdownRef = useRef(null);
+
+  // Close the dropdown when a link inside it is clicked
+  const handleLinkClick = () => {
+    setShowDropdown(false);
+  };
+
+  // Add a click event listener to the document to detect clicks outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // If the dropdown ref exists and the clicked element is not inside the dropdown, close the dropdown
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Remove the click event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-lightblue">
       <div className="container-fluid">
@@ -16,8 +44,8 @@ const NavigationBar = () => {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -38,34 +66,34 @@ const NavigationBar = () => {
             </li>
           </ul>
           <div className="d-flex">
-            <div className="dropdown">
+            <div className="dropdown" ref={dropdownRef}>
               <button
                 className="btn btn-light dropdown-toggle"
                 type="button"
                 id="accountDropdown"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+                onClick={() => setShowDropdown(!showDropdown)}
+                aria-expanded={showDropdown}
               >
                 Account
               </button>
-              <ul className="dropdown-menu dropdown-menu-end">
+              <ul className={`dropdown-menu ${showDropdown ? "show" : ""} dropdown-menu-end`}>
                 <li>
-                  <Link className="dropdown-item" to="/accounts/login">
+                  <Link className="dropdown-item" to="/accounts/login" onClick={handleLinkClick}>
                     Login
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/ifaz/logout">
+                  <Link className="dropdown-item" to="/ifaz/logout" onClick={handleLinkClick}>
                     Logout
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/ifaz/profile">
+                  <Link className="dropdown-item" to="/ifaz/profile" onClick={handleLinkClick}>
                     View/Edit Profile
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/accounts/signup">
+                  <Link className="dropdown-item" to="/accounts/signup" onClick={handleLinkClick}>
                     Create Account
                   </Link>
                 </li>
