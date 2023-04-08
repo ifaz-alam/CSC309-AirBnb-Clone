@@ -8,6 +8,7 @@ import { UserContext, useUserConext } from "./contexts/UserContext";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
 import ProfilePage from "./pages/profile";
+import NavigationBar from "./components/NavigationBar";
 
 function App() {
 	return (
@@ -18,6 +19,7 @@ function App() {
 			/>
 
 			<UserContext.Provider value={useUserConext()}>
+				<NavigationBar />
 				<Routes>
 					<Route path="/">
 						<Route index element={<HomeTesting />} />
