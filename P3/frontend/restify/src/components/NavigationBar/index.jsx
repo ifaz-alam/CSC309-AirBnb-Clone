@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { BsBell } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
@@ -6,8 +6,16 @@ import "./index.css";
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Navbar } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useAPIContext } from "../../contexts/APIContext";
+import { UserContext } from "../../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
+
 
 const NavigationBar = () => {
+  let navigate = useNavigate();
+
+  const { user, setUser } = useContext(UserContext); // Global authenticated user state
+
   // Initialize state to track whether the dropdown is shown or not
   const [showDropdown, setShowDropdown] = useState(false);
   // Create a ref for the dropdown element to be able to detect clicks outside it
@@ -16,6 +24,53 @@ const NavigationBar = () => {
   // Close the dropdown when a link inside it is clicked
   const handleLinkClick = () => {
     setShowDropdown(false);
+  };
+
+  // Handle logout to logout the currently authenticated user
+  const handleLogout = (event) => {
+    event.preventDefault();
+    navigate('/');
+    localStorage.removeItem("user");
+    localStorage.removeItem("pk");
+    localStorage.removeItem("Authorization");
+    window.location.reload();
+    handleLinkClick();
+  };
+
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    console.log(user.username);
+    if (user.username !== 'Guest') {
+      navigate(`/accounts/profile/${localStorage.getItem("username")}`);
+    }
+
+    else {
+      event.preventDefault();
+      navigate(`/accounts/login`, {replace : true});
+    }
+
+    handleLinkClick();
+  };
+
+  const handleViewProfile = (event) => {
+    // it's pretty much the same code lol
+    handleLogin(event);
+  };
+
+  const handleSignupClick = (event) => {
+    event.preventDefault();
+    console.log(user.username);
+    if (user.username !== 'Guest') {
+      navigate(`/accounts/profile/${localStorage.getItem("username")}`);
+    }
+
+    else {
+      event.preventDefault();
+      navigate(`/accounts/signup`, {replace : true});
+    }
+
+    handleLinkClick();
   };
 
   // Add a click event listener to the document to detect clicks outside the dropdown
@@ -37,6 +92,7 @@ const NavigationBar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-lightblue">
+      <p>Current user: {user.username}</p>
       <div className="container-fluid">
         <Link className="navbar-brand text-bold" to="/">
           Restify
@@ -55,12 +111,12 @@ const NavigationBar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/ifaz/properties">
+              <Link className="nav-link" to="#" onClick={handleViewProfile}>
                 My Properties
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/ifaz/reservations">
+              <Link className="nav-link" to="#" onClick={handleViewProfile}>
                 My Reservations
               </Link>
             </li>
@@ -77,26 +133,36 @@ const NavigationBar = () => {
                 Account
               </button>
               <ul className={`dropdown-menu ${showDropdown ? "show" : ""} dropdown-menu-end`}>
-                <li>
-                  <Link className="dropdown-item" to="/accounts/login" onClick={handleLinkClick}>
-                    Login
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/ifaz/logout" onClick={handleLinkClick}>
-                    Logout
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/ifaz/profile" onClick={handleLinkClick}>
-                    View/Edit Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/accounts/signup" onClick={handleLinkClick}>
-                    Create Account
-                  </Link>
-                </li>
+                {user.username === 'Default' && (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="#" onClick={handleLogin}>
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/accounts/signup" onClick={handleSignupClick}>
+                        Create Account
+                      </Link>
+                    </li>
+                  </>
+                )}
+
+                {user.username !== 'Guest' && (
+                  <>
+                  <li>
+                    <Link className="dropdown-item" to="#" onClick={handleViewProfile}>
+                      View/Edit Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="#" onClick={handleLogout}>
+                      Logout
+                    </Link>
+                  </li>
+                  </>
+
+                )}
               </ul>
             </div>
             <div className="d-flex align-items-center ms-3">

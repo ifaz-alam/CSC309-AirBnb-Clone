@@ -126,10 +126,11 @@ const LoginWindow = () => {
 					localStorage.setItem("username", account.username);
 					localStorage.setItem("pk", account.pk);
 				}
-
-				navigate("/");
+				
+				// Navigate to the logged in user's profile page by default
+				navigate(`/accounts/profile/${localStorage.getItem("username")}`);
 			} catch (error) {
-				console.log("Error with requst");
+				console.log("Error with request");
 			}
 		} else {
 			console.log("invalid");
