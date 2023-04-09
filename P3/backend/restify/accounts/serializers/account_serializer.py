@@ -14,4 +14,4 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = ['username', 'pk', 'first_name', 'last_name', "email", 'phone_number', 'biography', 'profile_picture', 'guest_rating', 'comments', 'properties', 'notifications',
                   'guest_reservations', 'host_reservations']
-        depth=1
+        depth=3

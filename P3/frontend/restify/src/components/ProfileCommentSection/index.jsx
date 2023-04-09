@@ -233,7 +233,30 @@ const ProfileCommentSection = (props) => {
 					</div>
 				</div>
 			) : (
-				<h1 className="text-center">No Comments</h1>
+				<div className="container d-flex flex-column justify-content-center">
+					<div className="row w-100">
+						<h1 className="text-center">No Comments</h1>
+						<div className="col"></div>
+					</div>
+					<div className="row w-100">
+						<div className="col">
+							{addCommentToggled ? (
+								<AddComment
+									toggleComment={toggleComment}
+									addComment={addComment}
+									errorText={commentErrorText}
+								/>
+							) : (
+								<button
+									className="btn btn-primary w-100"
+									onClick={() => toggleComment()}
+								>
+									Add a comment
+								</button>
+							)}
+						</div>
+					</div>
+				</div>
 			)}
 		</>
 	);

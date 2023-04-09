@@ -8,6 +8,9 @@ import ProfilePending from "../../components/ProfilePending";
 import ProfileAccepted from "../../components/ProfileAccepted";
 import ProfilePast from "../../components/ProfilePast";
 import ProfileCommentSection from "../../components/ProfileCommentSection";
+import ProfilePendingToOthers from "../../components/ProfilePendingToOthers";
+import ProfileAcceptedToOthers from "../../components/ProfileAcceptedToOthers";
+import ProfilePastToOthers from "../../components/ProfilePastToOthers";
 
 const ProfilePage = () => {
 	const { profileUser } = useParams();
@@ -61,6 +64,9 @@ const ProfilePage = () => {
 	}, []);
 
 	const updateRating = (newRating) => {
+		if (isNaN(newRating)) {
+			newRating = 0;
+		}
 		setProfileAccount({
 			...profileAccount,
 			guest_rating: newRating,
@@ -84,6 +90,166 @@ const ProfilePage = () => {
 			.then((result) => {
 				console.log("Success:", result);
 			});
+	};
+
+	const getPending = () => {
+		let pending = [];
+		// Iterate through the profileAccount host_reservations and find the ones with state as PENDING
+		for (let i = 0; i < profileAccount.host_reservations.length; i++) {
+			if (profileAccount.host_reservations[i].state === "PENDING") {
+				pending.push(profileAccount.host_reservations[i].property);
+			}
+		}
+		return pending;
+	};
+
+	const getPendingReservations = () => {
+		let pending = [];
+		// Iterate through the profileAccount host_reservations and find the ones with state as PENDING
+		for (let i = 0; i < profileAccount.host_reservations.length; i++) {
+			if (profileAccount.host_reservations[i].state === "PENDING") {
+				pending.push(profileAccount.host_reservations[i]);
+			}
+		}
+		return pending;
+	};
+
+	const getPendingToOthers = () => {
+		let pending = [];
+		// Iterate through the profileAccount guest_reservations and find the ones with state as PENDING
+		for (let i = 0; i < profileAccount.guest_reservations.length; i++) {
+			if (profileAccount.guest_reservations[i].state === "PENDING") {
+				pending.push(profileAccount.guest_reservations[i].property);
+			}
+		}
+		return pending;
+	};
+
+	const getPendingReservationsToOthers = () => {
+		let pending = [];
+		// Iterate through the profileAccount guest_reservations and find the ones with state as PENDING
+		for (let i = 0; i < profileAccount.guest_reservations.length; i++) {
+			if (profileAccount.guest_reservations[i].state === "PENDING") {
+				pending.push(profileAccount.guest_reservations[i]);
+			}
+		}
+		return pending;
+	};
+
+	const getApproved = () => {
+		let accepted = [];
+		// Iterate through the profileAccount host_reservations and find the ones with state as APPROVED
+		for (let i = 0; i < profileAccount.host_reservations.length; i++) {
+			if (profileAccount.host_reservations[i].state === "APPROVED") {
+				accepted.push(profileAccount.host_reservations[i].property);
+			}
+		}
+		return accepted;
+	};
+
+	const getApprovedReservations = () => {
+		let accepted = [];
+		// Iterate through the profileAccount host_reservations and find the ones with state as APPROVED
+		for (let i = 0; i < profileAccount.host_reservations.length; i++) {
+			if (profileAccount.host_reservations[i].state === "APPROVED") {
+				accepted.push(profileAccount.host_reservations[i]);
+			}
+		}
+		return accepted;
+	};
+
+	const getApprovedToOthers = () => {
+		let accepted = [];
+		// Iterate through the profileAccount guest_reservations and find the ones with state as APPROVED
+		for (let i = 0; i < profileAccount.guest_reservations.length; i++) {
+			if (profileAccount.guest_reservations[i].state === "APPROVED") {
+				accepted.push(profileAccount.guest_reservations[i].property);
+			}
+		}
+		return accepted;
+	};
+
+	const getApprovedReservationsToOthers = () => {
+		let accepted = [];
+		// Iterate through the profileAccount guest_reservations and find the ones with state as APPROVED
+		for (let i = 0; i < profileAccount.guest_reservations.length; i++) {
+			if (profileAccount.guest_reservations[i].state === "APPROVED") {
+				accepted.push(profileAccount.guest_reservations[i]);
+			}
+		}
+		return accepted;
+	};
+
+	const getCompletedDeniedCancelledTerminated = () => {
+		let completedDeniedCancelledTerminated = [];
+		// Iterate through the profileAccount host_reservations and find the ones with state as COMPLETED, DENIED, CANCELLED, or TERMINATED
+		for (let i = 0; i < profileAccount.host_reservations.length; i++) {
+			if (
+				profileAccount.host_reservations[i].state === "COMPLETED" ||
+				profileAccount.host_reservations[i].state === "DENIED" ||
+				profileAccount.host_reservations[i].state === "CANCELLED" ||
+				profileAccount.host_reservations[i].state === "TERMINATED"
+			) {
+				completedDeniedCancelledTerminated.push(
+					profileAccount.host_reservations[i].property
+				);
+			}
+		}
+		return completedDeniedCancelledTerminated;
+	};
+
+	const getCompletedDeniedCancelledTerminatedReservations = () => {
+		let completedDeniedCancelledTerminated = [];
+		// Iterate through the profileAccount host_reservations and find the ones with state as COMPLETED, DENIED, CANCELLED, or TERMINATED
+		for (let i = 0; i < profileAccount.host_reservations.length; i++) {
+			if (
+				profileAccount.host_reservations[i].state === "COMPLETED" ||
+				profileAccount.host_reservations[i].state === "DENIED" ||
+				profileAccount.host_reservations[i].state === "CANCELLED" ||
+				profileAccount.host_reservations[i].state === "TERMINATED"
+			) {
+				completedDeniedCancelledTerminated.push(
+					profileAccount.host_reservations[i]
+				);
+			}
+		}
+		return completedDeniedCancelledTerminated;
+	};
+
+	const getCompletedDeniedCancelledTerminatedToOthers = () => {
+		let completedDeniedCancelledTerminated = [];
+		// Iterate through the profileAccount guest_reservations and find the ones with state as COMPLETED, DENIED, CANCELLED, or TERMINATED
+		for (let i = 0; i < profileAccount.guest_reservations.length; i++) {
+			if (
+				profileAccount.guest_reservations[i].state === "COMPLETED" ||
+				profileAccount.guest_reservations[i].state === "DENIED" ||
+				profileAccount.guest_reservations[i].state === "CANCELLED" ||
+				profileAccount.guest_reservations[i].state === "TERMINATED"
+			) {
+				completedDeniedCancelledTerminated.push(
+					profileAccount.guest_reservations[i].property
+				);
+			}
+		}
+		return completedDeniedCancelledTerminated;
+	};
+
+	const getCompletedDeniedCancelledTerminatedReservationsToOthers = () => {
+		let completedDeniedCancelledTerminated = [];
+		// Iterate through the profileAccount guest_reservations and find the ones with state as COMPLETED, DENIED, CANCELLED, or TERMINATED
+		for (let i = 0; i < profileAccount.guest_reservations.length; i++) {
+			if (
+				profileAccount.guest_reservations[i].state === "COMPLETED" ||
+				profileAccount.guest_reservations[i].state === "DENIED" ||
+				profileAccount.guest_reservations[i].state === "CANCELLED" ||
+				profileAccount.guest_reservations[i].state === "TERMINATED"
+			) {
+				completedDeniedCancelledTerminated.push(
+					profileAccount.guest_reservations[i]
+				);
+			}
+		}
+		return completedDeniedCancelledTerminated;
 	};
 
 	return (
@@ -110,23 +276,38 @@ const ProfilePage = () => {
 								<>
 									<div className="mt-3">
 										<ProfilePending
-											properties={
-												profileAccount.properties
-											}
+											properties={getPending()}
+											reservations={getPendingReservations()}
+										/>
+									</div>
+									<div className="mt-3">
+										<ProfilePendingToOthers
+											properties={getPendingToOthers()}
+											reservations={getPendingReservationsToOthers()}
 										/>
 									</div>
 									<div className="mt-3">
 										<ProfileAccepted
-											properties={
-												profileAccount.properties
-											}
+											properties={getApproved()}
+											reservations={getApprovedReservations()}
+										/>
+									</div>
+									<div className="mt-3">
+										<ProfileAcceptedToOthers
+											properties={getApprovedToOthers()}
+											reservations={getApprovedReservationsToOthers()}
 										/>
 									</div>
 									<div className="mt-3">
 										<ProfilePast
-											properties={
-												profileAccount.properties
-											}
+											properties={getCompletedDeniedCancelledTerminated()}
+											reservations={getCompletedDeniedCancelledTerminatedReservations()}
+										/>
+									</div>
+									<div className="mt-3">
+										<ProfilePastToOthers
+											properties={getCompletedDeniedCancelledTerminatedToOthers()}
+											reservations={getCompletedDeniedCancelledTerminatedReservationsToOthers()}
 										/>
 									</div>
 								</>
@@ -136,8 +317,8 @@ const ProfilePage = () => {
 						</>
 						<div className="mt-3">
 							<ProfileCommentSection
-								ParentType="Property"
-								ParentID="1"
+								ParentType="Account"
+								ParentID={profileAccount.pk}
 								updateRating={updateRating}
 							/>
 						</div>

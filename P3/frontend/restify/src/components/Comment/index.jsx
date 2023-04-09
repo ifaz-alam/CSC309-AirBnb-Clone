@@ -20,11 +20,19 @@ const Comment = (props) => {
 
 	const [commentReplies, setCommentReplies] = useState(replies);
 
+	const [commentState, setcommentState] = useState(comment);
+	const [editedcommentState, seteditedcommentState] = useState(comment);
+
 	const [replyToggle, setReplyToggle] = useState(false);
 	const [reply, setReply] = useState("");
 	const [replyErrorText, setReplyErrorText] = useState("");
 
 	const [authorAccount, setAuthorAccount] = useState();
+
+	const [editToggle, setEditToggle] = useState(false);
+	const [valid, setValid] = useState(true);
+	const [errorMsg, setErrorMsg] = useState("");
+
 	let APIURL = "http://localhost:8000";
 
 	const permission = author_username === localStorage.getItem("username");
@@ -136,6 +144,30 @@ const Comment = (props) => {
 		}
 	};
 
+	const updateComment = async () => {
+		let response = await fetch(`${APIURL}/comments/`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `${localStorage.getItem("Authorization")}`,
+			},
+			body: JSON.stringify({
+				pk: pk,
+				comment: editedcommentState,
+				rating: rating || 0,
+			}),
+		});
+		let result = await response.json();
+		if (response.status !== 200) {
+			setErrorMsg("You cannot edit this comment.");
+		}
+		if (response.status === 200) {
+			setErrorMsg("");
+			setEditToggle(false);
+			setcommentState(editedcommentState);
+		}
+	};
+
 	return (
 		<>
 			<div className="card comment container mb-3">
@@ -186,7 +218,57 @@ const Comment = (props) => {
 					</div>
 				</div>
 				<div className="card-body">
-					<p>{comment}</p>
+					{editToggle ? (
+						<div>
+							<div className="my-1 d-flex flex-column">
+								<div className="input-group">
+									<input
+										type="text"
+										className="form-control"
+										onChange={(e) =>
+											seteditedcommentState(
+												e.target.value
+											)
+										}
+										value={editedcommentState}
+									/>
+									<button
+										className="btn btn-outline-secondary"
+										type="button"
+										onClick={(e) => {
+											updateComment(e);
+										}}
+									>
+										Submit
+									</button>
+									<button
+										className="btn btn-outline-secondary"
+										type="button"
+										onClick={() => {
+											setEditToggle(false);
+										}}
+									>
+										Cancel
+									</button>
+								</div>
+								{valid ? (
+									<></>
+								) : (
+									<div className="text-danger">
+										{errorMsg}
+									</div>
+								)}
+							</div>
+						</div>
+					) : (
+						<p
+							onClick={() => {
+								permission && setEditToggle(true);
+							}}
+						>
+							{commentState}
+						</p>
+					)}
 				</div>
 				<div>
 					{replyToggle ? (

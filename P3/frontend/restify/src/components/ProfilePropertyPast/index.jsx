@@ -1,8 +1,8 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const ProfileProperty = (props) => {
-	const { property, picture, state, owner } = props;
+const ProfilePropertyPast = (props) => {
+	const { property, picture, state, guest } = props;
 	let APIURL = "http://localhost:8000";
 
 	return (
@@ -17,8 +17,8 @@ const ProfileProperty = (props) => {
 				{state ? (
 					<>
 						<p className="card-text">
-							Owner:{" "}
-							<a href={`/accounts/profile/${owner}`}> {owner}</a>{" "}
+							Guest:{" "}
+							<a href={`/accounts/profile/${guest}`}> {guest}</a>{" "}
 						</p>
 						<p className="card-text">State: {state}</p>
 					</>
@@ -28,4 +28,4 @@ const ProfileProperty = (props) => {
 	);
 };
 
-export default ProfileProperty;
+export default ProfilePropertyPast;

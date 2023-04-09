@@ -1,38 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ProfileProperty from "../ProfileProperty";
+import ProfilePropertyPast from "../ProfilePropertyPast";
 
 const ProfilePast = (props) => {
-	const { properties } = props;
-
-	const [images, setImages] = useState([]);
-
-	useEffect(() => {
-		// Get the images
-		let APIURL = "http://localhost:8000";
-		async function fetchImages() {
-			let request = await fetch(`${APIURL}/images/`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-
-			let response = await request.json();
-			setImages(response);
-			// console.log(images.forEach((image) => console.log(image.pk)));
-			// console.log(images.filter((image) => 1 === image.pk));
-		}
-		fetchImages();
-		// console.log(properties);
-
-		// For each property, inspect the image value, and loop through each image, inspecting the pk. If they match, assign the image
-		// to the property
-	}, []);
+	const { properties, reservations } = props;
 
 	// Loop through each property in the properties array and return a ProfileProperty component
 	return (
 		<>
-			{Object.keys(images).length > 0 ? (
+			{properties ? (
 				<div className="container">
 					<div className="row">
 						<div className="col-12">
@@ -41,28 +17,36 @@ const ProfilePast = (props) => {
 									<div className="row">
 										<div className="col-12">
 											<h1 className="text-center">
-												Past Stays TODO
+												Past Stays To My Properties
 											</h1>
 										</div>
 									</div>
 									<div className="row">
-										{properties?.map((property, index) => (
-											<div
-												className="col-12 col-md-4 mt-4"
-												key={index}
-											>
-												<ProfileProperty
-													property={property}
-													picture={
-														images.filter(
-															(imageOBJ) =>
-																property.images ===
-																imageOBJ.pk
-														)[0].image
-													}
-												/>
-											</div>
-										))}
+										{reservations?.map(
+											(reservation, index) => (
+												<div
+													className="col-12 col-md-4 mt-4"
+													key={index}
+												>
+													<ProfilePropertyPast
+														property={
+															reservation.property
+														}
+														picture={
+															reservation.property
+																.images.image
+														}
+														guest={
+															reservation.guest
+																.username
+														}
+														state={
+															reservation.state
+														}
+													/>
+												</div>
+											)
+										)}
 									</div>
 								</div>
 							</div>

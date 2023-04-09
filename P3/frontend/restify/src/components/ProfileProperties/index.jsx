@@ -19,6 +19,7 @@ const ProfileProperties = (props) => {
 			});
 
 			let response = await request.json();
+			console.log(response);
 			setImages(response);
 			// console.log(images.forEach((image) => console.log(image.pk)));
 			// console.log(images.filter((image) => 1 === image.pk));
@@ -55,11 +56,7 @@ const ProfileProperties = (props) => {
 												<ProfileProperty
 													property={property}
 													picture={
-														images.filter(
-															(imageOBJ) =>
-																property.images ===
-																imageOBJ.pk
-														)[0].image
+														property.images.image
 													}
 												/>
 											</div>
