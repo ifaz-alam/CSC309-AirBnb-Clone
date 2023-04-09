@@ -45,16 +45,10 @@ function ImageCarousel() {
 
 
 
-const HomeTesting = () => {
+const Home = () => {
 	const { user, setUser } = useContext(UserContext); // Global authenticated user state
 	return (
-		<>
-			<h1>Testing Window</h1>
-			<p>Current user: {user.username}</p>
-			<p>Current token: {user.Authorization}</p>
-			<p>Local Storage, pk: {localStorage.getItem("pk")}</p>
-			<p>Local Storage, auth: {localStorage.getItem("Authorization")}</p>
-			
+		<>	
 			<div className="main">
 				<div id="landing-page-top">
 					<div className="blur"></div>
@@ -114,4 +108,4 @@ const HomeTesting = () => {
 	);
 };
 
-export default HomeTesting;
+export default Home;

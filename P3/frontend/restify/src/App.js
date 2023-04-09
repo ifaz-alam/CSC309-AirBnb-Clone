@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { APIContext, useAPIContext } from "./contexts/APIContext";
 import SignupWindow from "./components/SignupWindow";
 import LoginWindow from "./components/LoginWindow";
-import HomeTesting from "./components/HomeTesting";
+import Home from "./components/Home";
 import { useState } from "react";
 import { UserContext, useUserConext } from "./contexts/UserContext";
 import LoginPage from "./pages/login";
@@ -10,6 +10,7 @@ import SignupPage from "./pages/signup";
 import ProfilePage from "./pages/profile";
 import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
+import Debug from "./components/Debug";
 
 function App() {
 	return (
@@ -21,9 +22,10 @@ function App() {
 
 			<UserContext.Provider value={useUserConext()}>
 				<NavigationBar />
+				<Debug />
 				<Routes>
 					<Route path="/">
-						<Route index element={<HomeTesting />} />
+						<Route index element={<Home />} />
 						<Route path="/accounts">
 							<Route path="signup" element={<SignupPage />} />
 							<Route path="login" element={<LoginPage />} />
