@@ -92,8 +92,8 @@ const NavigationBar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-lightblue">
-      <p>Current user: {user.username}</p>
       <div className="container-fluid">
+        <p><small>User: {user.username}</small></p>
         <Link className="navbar-brand text-bold" to="/">
           Restify
         </Link>
