@@ -41,7 +41,7 @@ const NavigationBar = () => {
   const handleLogin = (event) => {
     event.preventDefault();
     console.log(user.username);
-    if (user.username !== 'Guest') {
+    if (user.username !== 'Default') {
       navigate(`/accounts/profile/${localStorage.getItem("username")}`);
     }
 
@@ -61,7 +61,7 @@ const NavigationBar = () => {
   const handleSignupClick = (event) => {
     event.preventDefault();
     console.log(user.username);
-    if (user.username !== 'Guest') {
+    if (user.username !== 'Default') {
       navigate(`/accounts/profile/${localStorage.getItem("username")}`);
     }
 
@@ -148,7 +148,7 @@ const NavigationBar = () => {
                   </>
                 )}
 
-                {user.username !== 'Guest' && (
+                {user.username !== 'Default' && (
                   <>
                   <li>
                     <Link className="dropdown-item" to="#" onClick={handleViewProfile}>
