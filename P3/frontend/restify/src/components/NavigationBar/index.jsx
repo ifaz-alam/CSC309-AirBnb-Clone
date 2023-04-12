@@ -10,6 +10,119 @@ import { useAPIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
+const NotificationCounter = () => {
+  const [count, setCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+
+  
+  let APIURL = "http://localhost:8000";
+
+  console.log(`use effect called in navigationbar`);
+  useEffect(() => {
+    let temp = 0;
+    const fetchNotifications = async () => {
+      let response = await fetch(`${APIURL}/notifications/get/`, {
+        method: "POST",
+        headers: {
+					"Content-Type": "application/json",
+          Authorization: localStorage.getItem("Authorization"),
+				},
+				body: JSON.stringify({
+					all: true,
+					username: localStorage.getItem("username"),
+				}),
+      });
+      let data = await response.json();
+      
+      // Check if there are more pages
+      console.log(`incoming notifications with length ${data.length}`);
+      console.log(data);
+      temp += data.length;
+      
+      let tempNotifications = [...data];
+      // Loop through the rest of the pages as long as they are valid
+      let i = 2;
+      let totalNotifications = [];
+      let hasMore = true;
+      
+      while (hasMore) {
+        console.log('CHECKING FOR MORE!');
+        let response = await fetch(`${APIURL}/notifications/get/?page=${i}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          body: JSON.stringify({
+            all: true,
+            username: localStorage.getItem("username"),
+          }),
+        });
+      
+        if (!response.ok) {
+          console.error("NO MORE PAGES LEFT!");
+          break;
+        }
+        
+        const data = await response.json();
+        console.log(`CHECKING THE ${i}'th page!`);
+        console.log(data);
+      
+        if (data.detail === "Invalid page.") {
+          // Reached the end of the pages
+          hasMore = false;
+        } else {
+          // Append the notifications from the current page to the array
+          temp += data.length;
+          tempNotifications.push(...data);
+        }
+        
+        i++;
+      }
+      
+      console.log(`Total notifications: ${totalNotifications.length}`);
+      
+
+      setCount(temp);
+      // reverse the array so the most recent notifications appear first
+      tempNotifications.reverse();
+      setNotifications(tempNotifications);
+      
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const NotificationDropdown = () => {
+    return (
+      <ul className={`dropdown-menu dropdown-menu-end ${showDropdown ? "show" : ""}`} aria-labelledby="navbarDropdown">
+        {notifications.map(notification => (
+          <li key={notification.id}>
+            <Link className="dropdown-item" to={notification.link}>
+              <small>{notification.message}</small>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+  
+  
+  return (
+    <div className="position-relative">
+      <BsBell size={25} onClick={() => setShowDropdown(!showDropdown)}/>
+      {count > 0 && (
+        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          {count}
+        </span>
+      )}
+      {showDropdown && <NotificationDropdown />}
+    </div>
+  );
+};
+
 
 const NavigationBar = () => {
   let navigate = useNavigate();
@@ -30,9 +143,9 @@ const NavigationBar = () => {
   const handleLogout = (event) => {
     event.preventDefault();
     navigate('/');
-    localStorage.removeItem("user");
-    localStorage.removeItem("pk");
-    localStorage.removeItem("Authorization");
+    localStorage.setItem("username", "Default");
+    localStorage.setItem("pk", -1);
+    localStorage.setItem("Authorization", "None");
     window.location.reload();
     handleLinkClick();
   };
@@ -133,7 +246,7 @@ const NavigationBar = () => {
                 Account
               </button>
               <ul className={`dropdown-menu ${showDropdown ? "show" : ""} dropdown-menu-end`}>
-                {user.username === 'Default' && (
+                {localStorage.getItem("username") === 'Default' && (
                   <>
                     <li>
                       <Link className="dropdown-item" to="#" onClick={handleLogin}>
@@ -148,7 +261,7 @@ const NavigationBar = () => {
                   </>
                 )}
 
-                {user.username !== 'Default' && (
+                {localStorage.getItem("username") !== 'Default' && (
                   <>
                   <li>
                     <Link className="dropdown-item" to="#" onClick={handleViewProfile}>
@@ -165,9 +278,11 @@ const NavigationBar = () => {
                 )}
               </ul>
             </div>
-            <div className="d-flex align-items-center ms-3">
-              <BsBell size={25} />
-            </div>
+            {localStorage.getItem("username") !== 'Default' && (
+              <div className="d-flex align-items-center ms-3">
+                <NotificationCounter />
+              </div>
+            )}
             <div className="ms-3">
               <form className="d-flex">
                 <input

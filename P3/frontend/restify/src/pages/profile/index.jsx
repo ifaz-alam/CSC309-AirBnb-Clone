@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 import { useParams } from "react-router-dom";
@@ -11,11 +11,15 @@ import ProfileCommentSection from "../../components/ProfileCommentSection";
 import ProfilePendingToOthers from "../../components/ProfilePendingToOthers";
 import ProfileAcceptedToOthers from "../../components/ProfileAcceptedToOthers";
 import ProfilePastToOthers from "../../components/ProfilePastToOthers";
+import { UserContext } from "../../contexts/UserContext";
 
 const ProfilePage = () => {
 	const { profileUser } = useParams();
 	const [profileAccount, setProfileAccount] = useState({});
-	const permission = localStorage.getItem("username") === profileUser;
+	const { user, setUser } = useContext(UserContext); // Global authenticated user state
+
+	const permission = localStorage.getItem('username') === profileUser;
+	// console.log(`Hi, I am here! ${profileUser} ${localStorage.getItem('username')}`);
 
 	// const testing = {
 	// 	username: "Xenon",
