@@ -19,6 +19,7 @@ class Comment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     # TODO More
+    created_at = models.DateTimeField(auto_now_add=True)
     
     comments = GenericRelation('self', related_query_name='comment_parent')
     
@@ -26,6 +27,7 @@ class Comment(models.Model):
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
+        ordering=['-created_at']
         
     def __str__(self):
         return f"{self.author}'s comment"

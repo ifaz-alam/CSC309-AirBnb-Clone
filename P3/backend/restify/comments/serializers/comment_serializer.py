@@ -29,7 +29,7 @@ class CommentSerializerNoParent(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ['pk', 'author', 'author_username', 'comment', 'replies']
+        fields = ['pk', 'author', 'author_username', 'comment', 'replies', 'created_at']
 
     def get_replies(self, obj):
         if obj.comments.all():
@@ -47,5 +47,5 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ['pk', 'author', 'author_username', 'comment', 'rating', 'parent', 'replies']
+        fields = ['pk', 'author', 'author_username', 'comment', 'rating', 'parent', 'replies', 'created_at']
 

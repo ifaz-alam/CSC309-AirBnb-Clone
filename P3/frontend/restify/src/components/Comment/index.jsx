@@ -16,8 +16,10 @@ const Comment = (props) => {
 		rating,
 		replies,
 		deleteComment,
+		created_at,
 	} = props;
 
+	const date = new Date(created_at);
 	const [commentReplies, setCommentReplies] = useState(replies);
 
 	const [commentState, setcommentState] = useState(comment);
@@ -189,6 +191,7 @@ const Comment = (props) => {
 								{author_username}
 							</h6>
 							<div className="">{getStars(rating)}</div>
+							<div>{date.toLocaleDateString()}</div>
 						</div>
 
 						<div className="buttons d-flex justify-content-evenly">
