@@ -113,10 +113,10 @@ class SearchView(viewsets.ModelViewSet):
                     return Response(PropertySerializer(page, many=True).data)
             if sort_by == 'max_guests':
                 if sort_direction == 'descending':
-                    page = self.paginate_queryset(Property.objects.order_by('-rating'))
+                    page = self.paginate_queryset(Property.objects.order_by('-max_guests'))
                     return Response(PropertySerializer(page, many=True).data)
                 else:
-                    page = self.paginate_queryset(Property.objects.order_by('rating'))
+                    page = self.paginate_queryset(Property.objects.order_by('max_guests'))
                     return Response(PropertySerializer(page, many=True).data)
         else:
 
