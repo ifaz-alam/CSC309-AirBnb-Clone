@@ -51,7 +51,7 @@ class NotificationViews(viewsets.ModelViewSet):
         """
         # account exists. now do some checking
         if not request.user.is_authenticated:
-            return Response({"not_authenticated" : "You must be logged in"}, status=403)
+            return Response({"error" : "You must be logged in"}, status=403)
 
         username = request.data.get('username')
         if not username:
@@ -61,11 +61,10 @@ class NotificationViews(viewsets.ModelViewSet):
         account = Account.objects.filter(username=username).first()
         if not account:
             return Response({'error': 'Account with specified username not found.'}, status=404)
-        
+
         # Check if the user is sending the notification to themselves
         if username == request.user.username:
             return Response({'error': 'Cannot send notification to yourself.'}, status=400)
-        
 
         payload = request.data
         link = payload.get('link', 'https://www.google.com')
@@ -75,7 +74,21 @@ class NotificationViews(viewsets.ModelViewSet):
             valid_choices = ", ".join([choice[0] for choice in Notification.NOTIFICATION_TYPE_CHOICES])
             return Response({'error': f'Invalid notification_type value. Must be one of {valid_choices}'}, status=400)
 
-        notification = Notification.objects.create(recipient=account, link=link, notification_type=notification_type.lower())
+        message = ''
+        if notification_type == 'reservation_request':
+            message = f'{request.user.username} sent you a reservation request.'
+        elif notification_type == 'cancellation_request':
+            message = f'{request.user.username} sent you a cancellation request.'
+        elif notification_type == 'reservation_approved':
+            message = f'Your reservation request was approved by {request.user.username}.'
+        elif notification_type == 'cancellation_approved':
+            message = f'Your cancellation request was approved by {request.user.username}.'
+        elif notification_type == 'property_comment':
+            message = f'Someone left a comment on your property.'
+        else:
+            message = 'Test notification from Phase 2 of Restify!'
+
+        notification = Notification.objects.create(recipient=account, link=link, notification_type=notification_type.lower(), message=message)
         notification.save()
         return Response(NotificationSerializer(notification).data, status=200)
     
