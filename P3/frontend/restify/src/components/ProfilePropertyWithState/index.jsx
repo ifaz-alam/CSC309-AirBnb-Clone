@@ -5,14 +5,47 @@ const ProfilePropertyWithState = (props) => {
 	const { property, picture, state, guest, reservation } = props;
 
 	let APIURL = "http://localhost:8000";
-
-	const handleAccept = () => {
-		console.log("Accept");
-	};
-
-	const handleReject = () => {
-		console.log("Reject");
-	};
+	
+	// handle reservation requests other people sent you
+	function handleAccept() {
+		async function UpdateReservationAccepted() {
+			let request = await fetch(`${APIURL}/reservations/`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: localStorage.getItem("Authorization"),
+				},
+				body: JSON.stringify({
+					reservation_id: `${reservation.id}`,
+					state: "approved",
+				}),
+			});
+			console.log("Updating the reservation to be accepted:");
+			let response = await request.json();
+			console.log(response);
+		}
+		UpdateReservationAccepted();
+	}
+	
+	function handleReject() {
+		async function UpdateReservationDenied() {
+			let request = await fetch(`${APIURL}/reservations/`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: localStorage.getItem("Authorization"),
+				},
+				body: JSON.stringify({
+					reservation_id: `${reservation.id}`,
+					state: "denied",
+				}),
+			});
+			console.log("Updating the reservation to be denied:");
+			let response = await request.json();
+			console.log(response);
+		}
+		UpdateReservationDenied();
+	}
 
 	return (
 		<div className="card">
