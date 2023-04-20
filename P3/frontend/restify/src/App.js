@@ -13,33 +13,30 @@ import Footer from "./components/Footer";
 import Debug from "./components/Debug";
 
 function App() {
-	return (
-		<BrowserRouter>
-			<link
-				rel="stylesheet"
-				href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-			/>
+  return (
+    <BrowserRouter>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      />
 
-			<UserContext.Provider value={useUserConext()}>
-				<NavigationBar />
-				<Debug />
-				<Routes>
-					<Route path="/">
-						<Route index element={<Home />} />
-						<Route path="/accounts">
-							<Route path="signup" element={<SignupPage />} />
-							<Route path="login" element={<LoginPage />} />
-							<Route
-								path="profile/:profileUser"
-								element={<ProfilePage />}
-							/>
-						</Route>
-					</Route>
-				</Routes>
-				<Footer />
-			</UserContext.Provider>
-		</BrowserRouter>
-	);
+      <UserContext.Provider value={useUserConext()}>
+        <NavigationBar />
+        <Debug />
+        <Routes>
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="/accounts">
+              <Route path="signup" element={<SignupPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="profile/:profileUser" element={<ProfilePage />} />
+            </Route>
+          </Route>
+        </Routes>
+        <Footer />
+      </UserContext.Provider>
+    </BrowserRouter>
+  );
 }
 
 export default App;
