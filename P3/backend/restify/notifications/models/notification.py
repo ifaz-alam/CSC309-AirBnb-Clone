@@ -50,13 +50,17 @@ class Notification(models.Model):
     # a link associated with the notification
     link = models.URLField(default="http://google.com/")
 
+    # a message associated with the notification
+    message = models.TextField(blank=True)
 
-    
+
 # specifies how to convert notification model instance to a JSON representation
 
 class NotificationSerializer(serializers.ModelSerializer):
     recipient = AccountSerializer()
     notification_type = serializers.ChoiceField(choices=Notification.NOTIFICATION_TYPE_CHOICES, label='Get_notification_type_display')
+    message = serializers.CharField()
+
     class Meta:
         model = Notification
-        fields = ['pk', 'notification_type', 'seen', 'link', 'recipient']
+        fields = ['pk', 'notification_type', 'seen', 'link', 'recipient', 'message']
