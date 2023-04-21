@@ -25,6 +25,14 @@ def getProperty(request):
         "all": "true"
     """
     data = request.data
+    
+    if (data.get('pk') == '' or data.get('pk') == None):
+            if (request.GET.get('pk') != None):
+                data['pk'] = request.GET.get('pk')
+    if (data.get('all') == '' or data.get('all') == None):
+            if (request.GET.get('all') != None):
+                data['all'] = request.GET.get('all')
+
     required = {"pk", "all"}
     if data['all'] == 'true':
         try:

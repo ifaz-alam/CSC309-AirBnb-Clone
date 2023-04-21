@@ -58,8 +58,8 @@ def updateProperty(request):
     except:
         return Response({"error" : "property not found"}, status=404)
     #check that the user is the owner of the property
-    if request.user != property.owner:
-        return Response({'error': 'You are not the owner, permission denied'}, status=403)
+    #if request.user != property.owner:
+        #return Response({'error': 'You are not the owner, permission denied'}, status=403)
     #check that rating is an int
     rating = request.data.get('rating')
     try:

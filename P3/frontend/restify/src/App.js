@@ -11,6 +11,7 @@ import ProfilePage from "./pages/profile";
 import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
 import Debug from "./components/Debug";
+import Gallery from "./pages/gallery";
 
 function App() {
 	return (
@@ -33,6 +34,9 @@ function App() {
 								path="profile/:profileUser"
 								element={<ProfilePage />}
 							/>
+						</Route>
+						<Route path="/properties">
+							<Route path="gallery/:propertypk" element={<Gallery/>}/>
 						</Route>
 					</Route>
 				</Routes>
