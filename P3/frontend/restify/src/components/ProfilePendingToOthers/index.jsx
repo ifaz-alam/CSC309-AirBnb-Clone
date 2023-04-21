@@ -50,7 +50,7 @@ const ProfilePendingToOthers = (props) => {
                 <div className="card-body">
                   <div className="row">
                     <div className="col-12">
-                      <h1 className="text-center">Pending Stays TODO</h1>
+                      <h1 className="text-center">Pending Requests To Others' Properties</h1>
                     </div>
                   </div>
                   <div className="row d-flex justify-content-center align-items-center">

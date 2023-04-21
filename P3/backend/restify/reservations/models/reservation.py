@@ -16,7 +16,7 @@ class Reservation(models.Model):
         PENDING = 'PENDING'
         DENIED = 'DENIED'
         APPROVED = 'APPROVED'
-        CANCELED = 'CANCELED'
+        CANCELED = 'CANCELLED'
         TERMINATED = 'TERMINATED'
         COMPLETED = 'COMPLETED'
 

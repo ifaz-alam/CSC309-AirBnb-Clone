@@ -20,7 +20,7 @@ const ProfilePropertyAcceptedToOthers = (props) => {
 			},
 			body: JSON.stringify({
 				reservation_id: `${reservation.id}`,
-				state: "terminated",
+				state: "cancelled",
 			}),
 		});
 		let response = await request.json();
@@ -31,7 +31,7 @@ const ProfilePropertyAcceptedToOthers = (props) => {
 		sendNotification(
 			owner,
 			"cancellation_request",
-			`http://localhost:8000/accounts/profile/${owner}`
+			`http://localhost:3000/accounts/profile/${owner}`
 		);
 	};
 	if (toggled) {

@@ -87,6 +87,8 @@ class NotificationViews(viewsets.ModelViewSet):
             message = f'Someone left a comment on your property.'
         elif notification_type == 'terminate':
             message = f'{request.user.username} terminated your reservation!'
+        elif notification_type == 'denied':
+            message = f'{request.user.username} denied your reservation!'
         else:
             message = 'Test notification from Phase 2 of Restify!'
 

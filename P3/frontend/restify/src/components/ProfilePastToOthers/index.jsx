@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProfileProperty from "../ProfileProperty";
 import ProfilePropertyPast from "../ProfilePropertyPast";
-
+// Info about past reservations a user has made to someone elses properties, i.e. completed, cancelled, terminated, etc.
 const ProfilePastToOthers = (props) => {
   const { properties, reservations } = props;
 
