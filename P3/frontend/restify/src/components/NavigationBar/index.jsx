@@ -97,6 +97,13 @@ const NotificationCounter = () => {
   }, []);
 
   const NotificationDropdown = () => {
+    if (notifications.length === 0) {
+      return (
+        <ul className={`dropdown-menu dropdown-menu-end ${showDropdown ? "show" : ""}`} aria-labelledby="navbarDropdown">
+          <div className="text-center"><small>You have no notifications!</small></div>
+        </ul>
+      )
+    }
     return (
       <ul className={`dropdown-menu dropdown-menu-end ${showDropdown ? "show" : ""}`} aria-labelledby="navbarDropdown">
         {notifications.map(notification => (
@@ -154,8 +161,7 @@ const NavigationBar = () => {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    console.log(user.username);
-    if (user.username !== 'Default') {
+    if (localStorage.getItem("username") !== 'Default' && localStorage.getItem("username") !== null) {
       navigate(`/accounts/profile/${localStorage.getItem("username")}`);
     }
 
@@ -174,8 +180,7 @@ const NavigationBar = () => {
 
   const handleSignupClick = (event) => {
     event.preventDefault();
-    console.log(user.username);
-    if (user.username !== 'Default') {
+    if (localStorage.getItem("username") !== 'Default' && localStorage.getItem("username") !== null) {
       navigate(`/accounts/profile/${localStorage.getItem("username")}`);
     }
 
@@ -207,7 +212,7 @@ const NavigationBar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-lightblue">
       <div className="container-fluid">
-        <p><small>User: {user.username}</small></p>
+        <p><small>User: {localStorage.getItem("username")}</small></p>
         <Link className="navbar-brand text-bold" to="/">
           Restify
         </Link>
@@ -247,7 +252,7 @@ const NavigationBar = () => {
                 Account
               </button>
               <ul className={`dropdown-menu ${showDropdown ? "show" : ""} dropdown-menu-end`}>
-                {localStorage.getItem("username") === 'Default' && (
+                {(localStorage.getItem("username") === "Default" || localStorage.getItem("username") === null) && (
                   <>
                     <li>
                       <Link className="dropdown-item" to="#" onClick={handleLogin}>
@@ -262,7 +267,7 @@ const NavigationBar = () => {
                   </>
                 )}
 
-                {localStorage.getItem("username") !== 'Default' && (
+                {(localStorage.getItem("username") !== 'Default' && localStorage.getItem("username") !== null) && (
                   <>
                   <li>
                     <Link className="dropdown-item" to="#" onClick={handleViewProfile}>
@@ -279,7 +284,7 @@ const NavigationBar = () => {
                 )}
               </ul>
             </div>
-            {localStorage.getItem("username") !== 'Default' && (
+            {(localStorage.getItem("username") !== 'Default' && localStorage.getItem("username") !== null) && (
               <div className="d-flex align-items-center ms-3">
                 <NotificationCounter />
               </div>

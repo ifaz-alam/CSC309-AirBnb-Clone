@@ -99,7 +99,7 @@ class ReservationViews(viewsets.ModelViewSet):
                 host = property.owner
 
         # check if reservation already exists for this guest and property
-        existing_reservation = Reservation.objects.filter(guest=guest, property=property).first()
+        existing_reservation = Reservation.objects.filter(guest=guest, property=property, state='PENDING').first()
         if existing_reservation:
             return Response({'error': 'Reservation by this guest already exists for this property'}, status=400)
 
