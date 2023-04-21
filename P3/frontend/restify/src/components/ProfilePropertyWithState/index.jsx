@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
+import { sendNotification } from "../../helpers/notifications";
+
 const ProfilePropertyWithState = (props) => {
 	const { property, picture, state, guest, reservation } = props;
 
@@ -26,6 +28,9 @@ const ProfilePropertyWithState = (props) => {
 
 		// update the reservation state in the component state
 		setReservationState("approved");
+
+		// send the notification
+		sendNotification(guest, "reservation_approved", `http://localhost:8000/accounts/profile/${guest}`);
 	}
 
 	async function handleReject() {

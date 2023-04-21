@@ -10,21 +10,26 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { useAPIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
-
+import CloseButton from 'react-bootstrap/CloseButton'
 const NotificationCounter = () => {
   const [count, setCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePages, setHasMorePages] = useState(true);
+  const [numPages, setNumPages] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   
   let APIURL = "http://localhost:8000";
 
   console.log(`use effect called in navigationbar`);
+  // on mount count the # of notifications
   useEffect(() => {
     let temp = 0;
-    const fetchNotifications = async () => {
-      let response = await fetch(`${APIURL}/notifications/get/`, {
+    const countNotifications = async () => {
+      // this is to count how many notifications we
+      let response = await fetch(`${APIURL}/notifications/get/?page=1`, {
         method: "POST",
         headers: {
 					"Content-Type": "application/json",
@@ -42,12 +47,16 @@ const NotificationCounter = () => {
       console.log(data);
       temp += data.length;
       
-      let tempNotifications = [...data];
+      // let tempNotifications = [...data];
       // Loop through the rest of the pages as long as they are valid
       let i = 2;
-      let totalNotifications = [];
       let hasMore = true;
       
+      if (!response.ok) {
+        hasMore = false;
+      }
+
+      let countPage = 1;
       while (hasMore) {
         console.log('CHECKING FOR MORE!');
         let response = await fetch(`${APIURL}/notifications/get/?page=${i}`, {
@@ -73,30 +82,89 @@ const NotificationCounter = () => {
       
         if (data.detail === "Invalid page.") {
           // Reached the end of the pages
-          hasMore = false;
+          setHasMorePages(false);
+
         } else {
           // Append the notifications from the current page to the array
           temp += data.length;
-          tempNotifications.push(...data);
+          countPage += 1;
+          // tempNotifications.push(...data);
         }
         
         i++;
       }
       
-      console.log(`Total notifications: ${totalNotifications.length}`);
-      
-
+      setNumPages(countPage);
       setCount(temp);
       // reverse the array so the most recent notifications appear first
-      tempNotifications.reverse();
-      setNotifications(tempNotifications);
       
     };
 
-    fetchNotifications();
+    countNotifications();
   }, []);
 
+  // fetch the notifications for the current page by making an API call. 
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      let response = await fetch(`${APIURL}/notifications/get/?page=${currentPage}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("Authorization"),
+        },
+        body: JSON.stringify({
+          all: true,
+          username: localStorage.getItem("username"),
+        }),
+      });
+      let data = await response.json();
+      setNotifications([...data]);
+    };
+
+    fetchNotifications();
+  }, [currentPage, notifications]);
+
+
+  const handleLeftArrowClick = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      setHasMorePages(true);
+    }
+  };
+
+  const handleRightArrowClick = () => {
+    if (hasMorePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handleDeleteNotification = async (pk) => {
+    // Make a DELETE request to your server to delete the notification with the given pk
+    // After the request has been completed, update the state to remove the deleted notification
+    console.log(`Deleting notification with pk: ${pk}`);
+    let request = await fetch(`${APIURL}/notifications/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("Authorization"),
+      },
+      body: JSON.stringify({
+        notification_id: `${pk}`,
+      }),
+    });
+    let response = await request.json();
+    console.log(response);
+    setCount(count - 1);
+
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification.id !== pk)
+    );
+  };
+
+  // dropdown handler for notification
   const NotificationDropdown = () => {
+    // get a dropdown of notifications for the current page
+
     if (notifications.length === 0) {
       return (
         <ul className={`dropdown-menu dropdown-menu-end ${showDropdown ? "show" : ""}`} aria-labelledby="navbarDropdown">
@@ -104,20 +172,38 @@ const NotificationCounter = () => {
         </ul>
       )
     }
-    return (
-      <ul className={`dropdown-menu dropdown-menu-end ${showDropdown ? "show" : ""}`} aria-labelledby="navbarDropdown">
-        {notifications.map(notification => (
-          <li key={notification.id}>
-            <Link className="dropdown-item" to={notification.link}>
-              <small>{notification.message}</small>
-            </Link>
+    else {
+      return (
+        <ul className={`dropdown-menu dropdown-menu-end ${showDropdown ? "show" : ""}`} aria-labelledby="navbarDropdown">
+          {notifications.map(notification => (
+            <li key={notification.id}>
+              <>
+                <div className="d-flex justify-content-between align-items-center">
+                  <Link className="dropdown-item" to={notification.link}>
+                    {/* create a horizontal flexbox container */}
+                      <small>(#{notification.pk} - {notification.message}</small>
+                  </Link>
+                  <button onClick={() => handleDeleteNotification(notification.pk)}className="close-button">✘</button>
+                </div>
+              </>
+            </li>
+          ))}
+          <li className="d-flex justify-content-between">
+            <button className="btn btn-link" onClick={handleLeftArrowClick} disabled={currentPage === 1}>
+              &lt;
+            </button>
+            <small>{currentPage}{"/"}{numPages}</small>
+            <button className="btn btn-link" onClick={handleRightArrowClick} disabled={currentPage === numPages}>
+              &gt;
+            </button>
           </li>
-        ))}
-      </ul>
-    );
+        </ul>
+      );
+    }
+      
   };
   
-  
+  // conditional render of notification dropdown
   return (
     <div className="position-relative">
       <BsBell size={25} onClick={() => setShowDropdown(!showDropdown)}/>

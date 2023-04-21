@@ -78,13 +78,15 @@ class NotificationViews(viewsets.ModelViewSet):
         if notification_type == 'reservation_request':
             message = f'{request.user.username} sent you a reservation request.'
         elif notification_type == 'cancellation_request':
-            message = f'{request.user.username} sent you a cancellation request.'
+            message = f'{request.user.username} cancelled their reservation at your property!'
         elif notification_type == 'reservation_approved':
             message = f'Your reservation request was approved by {request.user.username}.'
         elif notification_type == 'cancellation_approved':
             message = f'Your cancellation request was approved by {request.user.username}.'
         elif notification_type == 'property_comment':
             message = f'Someone left a comment on your property.'
+        elif notification_type == 'terminate':
+            message = f'{request.user.username} terminated your reservation!'
         else:
             message = 'Test notification from Phase 2 of Restify!'
 

@@ -36,6 +36,7 @@ class Notification(models.Model):
         ('cancellation_approved', 'Your Cancellation Request Approved'),
         ('property_comment', 'Someone left a comment on your property!'),
         ('test_notification', 'Test notification from Phase 2 of Restify!'),
+        ('terminate', 'Someone terminated your reservation!'),
     ]
     # link the notification to the associated account
     recipient = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='notifications')

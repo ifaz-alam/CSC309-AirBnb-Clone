@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
+// import sendNotification from helpers
+import { sendNotification } from "../../helpers/notifications";
+
 const ProfilePropertyAccepted = (props) => {
 	const { property, picture, state, guest, reservation } = props;
-
+	console.log(guest);
 	const [terminated, setTerminated] = useState(false);
 	const navigate = useNavigate();
 	let APIURL = "http://localhost:8000";
@@ -24,6 +27,10 @@ const ProfilePropertyAccepted = (props) => {
 		let response = await request.json();
 		console.log(response);
 		setTerminated(true);
+		
+		// send the notification
+		sendNotification(guest, "terminate", `http://localhost:8000/accounts/profile/${guest}`);
+		
 	};
 
 	const handleUndo = async () => {

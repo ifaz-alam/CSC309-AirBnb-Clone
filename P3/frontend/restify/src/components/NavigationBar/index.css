@@ -14,7 +14,17 @@
   color: #f66867;
 }
 
-
-
+.close-button {
+  border: none;
+  background-color: transparent;
+  color: black;
+  font-size: 1em;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.close-button:hover {
+  text-decoration: underline;
+  color:red
+}
 
 
