@@ -181,7 +181,7 @@ const NotificationCounter = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <Link className="dropdown-item" to={notification.link}>
                     {/* create a horizontal flexbox container */}
-                      <small>(#{notification.pk} - {notification.message}</small>
+                      <small>#{notification.pk} - {notification.message}</small>
                   </Link>
                   <button onClick={() => handleDeleteNotification(notification.pk)}className="close-button">✘</button>
                 </div>
