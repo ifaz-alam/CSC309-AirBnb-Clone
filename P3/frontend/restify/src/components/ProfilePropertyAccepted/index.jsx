@@ -29,7 +29,7 @@ const ProfilePropertyAccepted = (props) => {
 		setTerminated(true);
 		
 		// send the notification
-		sendNotification(guest, "terminate", `http://localhost:8000/accounts/profile/${guest}`);
+		sendNotification(guest, "terminate", `http://localhost:3000/accounts/profile/${guest}`);
 		
 	};
 
