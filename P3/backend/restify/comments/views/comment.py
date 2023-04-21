@@ -19,7 +19,7 @@ class CommentViews(viewsets.ModelViewSet):
 
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 

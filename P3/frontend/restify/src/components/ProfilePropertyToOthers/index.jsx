@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const ProfilePropertyToOthers = (props) => {
 	const { property, picture, state, owner, reservation } = props;
 
 	const [toggled, setToggled] = useState(false);
-
+	const navigate = useNavigate();
 	let APIURL = "http://localhost:8000";
 
 	const handleReject = () => {
@@ -18,6 +18,8 @@ const ProfilePropertyToOthers = (props) => {
 				src={`${APIURL}${picture}`}
 				alt={property.name}
 				className="card-img-top"
+				onClick={() => navigate(`/properties/gallery/${property.id}`)}
+				onMouseOver={(e) => (e.currentTarget.style.cursor = "pointer")}
 			/>
 			<div className="card-body">
 				<h5 className="card-title">{property.name}</h5>
