@@ -3,6 +3,7 @@ import ProfileProperty from "../ProfileProperty";
 import ProfilePropertyWithState from "../ProfilePropertyWithState";
 import ProfilePropertyToOthers from "../ProfilePropertyToOthers";
 
+
 const ProfilePendingToOthers = (props) => {
   const { properties, reservations } = props;
 

@@ -30,7 +30,7 @@ const ProfilePropertyWithState = (props) => {
 		setReservationState("approved");
 
 		// send the notification
-		sendNotification(guest, "reservation_approved", `http://localhost:8000/accounts/profile/${guest}`);
+		sendNotification(guest, "reservation_approved", `http://localhost:3000/accounts/profile/${guest}`);
 	}
 
 	async function handleReject() {
