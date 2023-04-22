@@ -122,7 +122,7 @@ const NotificationCounter = () => {
     };
 
     fetchNotifications();
-  }, [currentPage, notifications]);
+  }, [currentPage]);
 
 
   const handleLeftArrowClick = () => {
