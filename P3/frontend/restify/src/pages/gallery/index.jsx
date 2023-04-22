@@ -181,6 +181,12 @@ const Gallery=() => {
                         All Year
                         <span className="fw-bold">{property.price_per_night}</span>
                     </li>
+                    <li
+                        className="list-group-item d-flex justify-content-between"
+                    >
+                        Status
+                        <span className="fw-bold">{property.current_status}</span>
+                    </li>
                 </ul>
             </div>
             <div className="col-lg-6 mt-3 mt-lg-0">

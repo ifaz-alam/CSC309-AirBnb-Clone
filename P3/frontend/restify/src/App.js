@@ -12,6 +12,8 @@ import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
 import Debug from "./components/Debug";
 import Gallery from "./pages/gallery";
+import PropertyCreationWindow from "./pages/login";
+import CreatePropertyPage from "./pages/createProperty";
 
 function App() {
 	return (
@@ -37,6 +39,7 @@ function App() {
 						</Route>
 						<Route path="/properties">
 							<Route path="gallery/:propertypk" element={<Gallery/>}/>
+							<Route path="create" element={<CreatePropertyPage/>}/>
 						</Route>
 					</Route>
 				</Routes>
