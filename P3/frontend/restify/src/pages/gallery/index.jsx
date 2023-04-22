@@ -6,6 +6,8 @@ const Gallery=() => {
     const { propertypk } = useParams();
     const [property, setProperty] = useState({});
     let APIURL = "http://localhost:8000";
+
+    // this happens when the component is mounted for the first time
     useEffect(() => {
         console.log(propertypk)
         async function fetchProfile() {
@@ -197,7 +199,7 @@ const Gallery=() => {
                         {property.owner.email}
                     </h6>
                     <h6 className="text-center mb-2">{property.owner.phone_number}</h6>
-                    <button type="button" className="btn button-color">
+                    <button type="button" className="btn button-color" >
                         Book Now!
                     </button>
                     <a href="./edit-gallery.html" className="w-100">

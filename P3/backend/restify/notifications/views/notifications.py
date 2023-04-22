@@ -84,7 +84,9 @@ class NotificationViews(viewsets.ModelViewSet):
         elif notification_type == 'cancellation_approved':
             message = f'Your cancellation request was approved by {request.user.username}.'
         elif notification_type == 'property_comment':
-            message = f'Someone left a comment on your property.'
+            message = f'{request.user.username} a comment on your property.'
+        elif notification_type == 'profile_comment':
+            message = f'{request.user.username} left a comment on your profile.'
         elif notification_type == 'terminate':
             message = f'{request.user.username} terminated your reservation!'
         elif notification_type == 'denied':
