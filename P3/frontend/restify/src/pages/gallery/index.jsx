@@ -1,14 +1,18 @@
 import { useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import ProfileCommentSection from "../../components/ProfileCommentSection";
+import { sendNotification } from "../../helpers/notifications";
 
 const Gallery=() => {
     const { propertypk } = useParams();
     const [property, setProperty] = useState({});
+    const [booked, setBooked] = useState(false);
+    const [text, setText] = useState("Booking..."); 
     let APIURL = "http://localhost:8000";
 
     // this happens when the component is mounted for the first time
     useEffect(() => {
+        console.log(`I AM GONNA PRINT THE PROPERY STUFF REALLY QUICK ${JSON.stringify(property)}`)
         console.log(propertypk)
         async function fetchProfile() {
 			let request = await fetch(`${APIURL}/properties/property/?pk=${propertypk}&all=false`, {
@@ -95,6 +99,45 @@ const Gallery=() => {
 			);
 		}
 	};
+
+    const bookProperty = async () => {
+        console.log(`My setbooked value is ${booked}`);
+        let request = await fetch(`${APIURL}/reservations/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: localStorage.getItem("Authorization"),
+            },
+            body: JSON.stringify(
+                {
+                    guest: localStorage.getItem("username"),
+                    property_id: property.pk,
+                    start_date: "10-10-2022",
+                    end_date: "10-10-2022"
+                }),
+        })
+
+        let response = await request.json();
+        console.log(JSON.stringify(response));
+        if (!request.ok) {
+            if (!booked) { // Only update state if booked state is false
+                setText("You have already booked this property!");
+                setBooked(true);
+            }
+        } else {
+            if (!booked) { // Only update state if booked state is false
+                setText("Booked!");
+                setBooked(true);
+            }
+        }
+
+        console.log(`IM SENDING A NOTIFICATION SINCE IM RESERVING A REQUST`);
+        sendNotification(property.owner.username,
+            "reservation_request",
+            `http://localhost:3000/accounts/profile/${property.owner.username}`
+        );
+    }
+
     const updateRating = (newRating) => {
 		console.log("updating rating now")
         if (isNaN(newRating)) {
@@ -199,9 +242,15 @@ const Gallery=() => {
                         {property.owner.email}
                     </h6>
                     <h6 className="text-center mb-2">{property.owner.phone_number}</h6>
-                    <button type="button" className="btn button-color" >
-                        Book Now!
-                    </button>
+                    {booked ?
+                        <button type="button" className="btn btn-secondary" >
+                            {text}
+                        </button>
+                    :
+                        <button type="button" className="btn button-color" onClick={async () => await bookProperty() }>
+                            Book Now!
+                        </button>
+                    }
                     <a href="./edit-gallery.html" className="w-100">
                         <button type="button" className="btn btn-danger mt-3 w-100">
                             Edit Property

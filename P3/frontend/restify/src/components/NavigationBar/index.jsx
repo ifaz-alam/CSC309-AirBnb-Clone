@@ -298,7 +298,7 @@ const NavigationBar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-lightblue">
       <div className="container-fluid">
-        <p><small>User: {localStorage.getItem("username")}</small></p>
+        {/* <p><small>User: {localStorage.getItem("username")}</small></p> */}
         <Link className="navbar-brand text-bold" to="/">
           Restify
         </Link>

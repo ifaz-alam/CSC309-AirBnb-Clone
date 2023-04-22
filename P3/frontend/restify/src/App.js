@@ -23,7 +23,6 @@ function App() {
 
 			<UserContext.Provider value={useUserConext()}>
 				<NavigationBar />
-				<Debug />
 				<Routes>
 					<Route path="/">
 						<Route index element={<Home />} />
